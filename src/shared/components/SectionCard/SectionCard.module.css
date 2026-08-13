@@ -1,0 +1,42 @@
+.card{
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 16px;
+    box-shadow: 0 1px 2px rgb(15 23 42 / 0.03);
+}
+
+.headingRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 22px;
+}
+
+.title:global(.ant-typography) {
+  margin: 0 !important;
+  color: var(--color-text-strong);
+  font-size: 18px;
+  line-height: 1.4;
+}
+
+.description:global(.ant-typography) {
+  max-width: 660px;
+  margin: 5px 0 0 !important;
+  color: var(--color-text-muted);
+  font-size: 13px;
+}
+
+.extra {
+  flex: none;
+}
+
+@media (max-width: 575px) {
+  .card :global(.ant-card-body) {
+    padding: 18px;
+  }
+
+  .headingRow {
+    flex-direction: column;
+    margin-bottom: 18px;
+  }
+}

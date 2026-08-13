@@ -1,0 +1,274 @@
+.page {
+  width: min(100% - 48px, 1424px);
+  margin: 0 auto;
+  padding: 28px 0 12px;
+}
+
+.hero {
+  position: relative;
+  display: grid;
+  overflow: hidden;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 38px;
+  margin-bottom: 20px;
+  padding: 28px 30px;
+  border: 1px solid #dbe5e6;
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 96% 10%, rgb(27 145 134 / 0.1), transparent 35%),
+    #ffffff;
+  box-shadow: 0 2px 5px rgb(15 23 42 / 0.03);
+}
+
+.hero::before {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 4px;
+  background: linear-gradient(#1a9a8e, #0b6b64);
+  content: "";
+}
+
+.heroCopy {
+  min-width: 0;
+}
+
+.statusRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.heroTag:global(.ant-tag) {
+  display: inline-flex;
+  min-height: 30px;
+  margin: 0;
+  align-items: center;
+  padding: 3px 11px;
+  border-radius: 999px;
+  font-weight: 650;
+}
+
+.reference {
+  padding-left: 3px;
+  color: #819098;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 11px;
+}
+
+.pageTitle:global(.ant-typography) {
+  max-width: 900px;
+  margin: 0 !important;
+  color: #172b35;
+  font-size: clamp(24px, 2.2vw, 34px);
+  font-weight: 760;
+  line-height: 1.25;
+  letter-spacing: -0.035em;
+}
+
+.organization {
+  margin-top: 14px;
+  color: #687a83;
+  font-size: 12px;
+}
+
+.organization span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.organization :global(.anticon) {
+  color: #77938f;
+}
+
+.heroMetrics {
+  display: grid;
+  min-width: 282px;
+  align-content: center;
+  gap: 12px;
+}
+
+.metric {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 10px 12px;
+  border: 1px solid #e3eaeb;
+  border-radius: 10px;
+  background: rgb(250 252 252 / 0.85);
+}
+
+.metricIcon {
+  display: grid;
+  flex: 0 0 36px;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  background: #e7f5f2;
+  color: #0f766e;
+  font-size: 16px;
+}
+
+.deadlineIcon {
+  background: #eef1f7;
+  color: #536a91;
+}
+
+.metric small,
+.metric strong,
+.metric em {
+  display: block;
+}
+
+.metric small {
+  margin-bottom: 2px;
+  color: #859299;
+  font-size: 9px;
+  font-weight: 750;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.metric strong {
+  color: #24343e;
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.metric em {
+  margin-top: 2px;
+  color: #71828b;
+  font-size: 9px;
+  font-style: normal;
+  font-weight: 650;
+}
+
+.metric em.urgent {
+  color: #c54f37;
+}
+
+.contentGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 374px;/*占剩余份额，且允许自由缩小*/
+  align-items: start;/*顶部对齐*/
+  gap: 20px;/*两格间间隔20px*/
+}
+/*决定左右排列*/
+
+.mainColumn {
+  display: grid;
+  min-width: 0;
+  gap: 20px;
+}
+
+.reviewColumn {
+  position: sticky;
+  top: 20px;
+}
+
+.innerDivider:global(.ant-divider) {
+  margin: 2px 0 17px;
+  border-color: #e8edef;
+}
+
+.keywordSection {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.keywordLabel {
+  display: inline-flex;
+  flex: 0 0 auto;
+  min-height: 27px;
+  align-items: center;
+  gap: 6px;
+  color: #73828b;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.keywords {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.keywords :global(.ant-tag) {
+  margin: 0;
+  padding: 3px 10px;
+  border: 1px solid #dfe7e7;
+  border-radius: 999px;
+  background: #f5f8f8;
+  color: #4e6669;
+  font-size: 11px;
+}
+
+.itemCount {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: #edf5f4;
+  color: #4d7874;
+  font-size: 10px;
+  font-weight: 750;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+@media (max-width: 1120px) {
+  .contentGrid {
+    grid-template-columns: minmax(0, 1fr) 340px;
+  }
+
+  .hero {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+
+  .heroMetrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 920px) {
+  .contentGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .reviewColumn {
+    position: static;
+  }
+}
+
+@media (max-width: 575px) {
+  .page {
+    width: min(100% - 28px, 1424px);
+    padding-top: 16px;
+  }
+
+  .hero {
+    gap: 18px;
+    padding: 20px 18px 19px;
+    border-radius: 14px;
+  }
+
+  .heroMetrics {
+    grid-template-columns: 1fr;
+  }
+
+  .pageTitle:global(.ant-typography) {
+    font-size: 23px;
+  }
+
+  .keywordSection {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
