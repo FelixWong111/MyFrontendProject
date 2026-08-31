@@ -4,7 +4,7 @@ import { Card, Typography } from "antd";
 import styles from "./SectionCard.module.css";
 
 interface SectionCardProps{
-    title?:string;
+    title:string;
     description?:string;
     extra?:ReactNode;
     children?:ReactNode;
@@ -31,7 +31,7 @@ export function SectionCard({
                         <Typography.Paragraph className={styles.description}>
                             {description}
                         </Typography.Paragraph>
-                    ) : null}
+                    ) : null} {/*JavaScript三元运算符。条件 ? 条件成立执行 : 条件不成立执行*/}
                 </div>
                 {extra ? <div className={styles.extra}>{extra}</div> : null}
             </div>

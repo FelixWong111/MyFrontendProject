@@ -1,0 +1,23 @@
+.files-list {
+  width: 100%;
+}
+
+.files-list__name.ant-btn {
+  max-width: 320px;
+  height: auto;
+  padding-inline: 0;
+  overflow: hidden;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.files-list .files-list__row--selected > td {
+  background: #edf8f6 !important;
+}
+
+@media (max-width: 767px) {
+  .files-list__name.ant-btn {
+    max-width: 220px;
+  }
+}

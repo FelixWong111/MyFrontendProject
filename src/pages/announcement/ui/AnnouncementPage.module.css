@@ -69,6 +69,13 @@
   letter-spacing: -0.035em;
 }
 
+.heroDescription:global(.ant-typography) {
+  max-width: 760px;
+  margin: 12px 0 0 !important;
+  color: #687a83;
+  font-size: 13px;
+}
+
 .organization {
   margin-top: 14px;
   color: #687a83;
@@ -154,16 +161,25 @@
 
 .contentGrid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 374px;/*占剩余份额，且允许自由缩小*/
-  align-items: start;/*顶部对齐*/
-  gap: 20px;/*两格间间隔20px*/
+  grid-template-columns: minmax(0, 1fr) 374px;
+  align-items: start;
+  gap: 20px;
 }
-/*决定左右排列*/
 
 .mainColumn {
   display: grid;
   min-width: 0;
   gap: 20px;
+}
+
+.fileSection {
+  display: grid;
+  gap: 16px;
+}
+
+.attachmentSection {
+  display: grid;
+  gap: 16px;
 }
 
 .reviewColumn {
