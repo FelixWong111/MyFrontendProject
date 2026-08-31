@@ -16,12 +16,30 @@ interface AnnouncementMetadata {
   lastJobId: string | null;
 }
 
+export interface AnnouncementInfo {
+  id: string;
+  tenderers: string[];
+  agents: string[];
+  deadline: string | null;
+  projectCode: string | null;
+  qualifications: string[];
+  subLotIds: string[];
+}
+
+export type AnnouncementInfoInput = Omit<AnnouncementInfo, "id">;
+
+export interface UpdateAnnouncementInput {
+  name: string;
+  detail: AnnouncementInfoInput;
+}
+
 export interface AnnouncementListItem extends AnnouncementMetadata {
   fileCount: number;
 }
 
 export interface AnnouncementDetail extends AnnouncementMetadata {
   files: AnnouncementFile[];
+  detail: AnnouncementInfo;
 }
 
 export interface AnnouncementListResponse {

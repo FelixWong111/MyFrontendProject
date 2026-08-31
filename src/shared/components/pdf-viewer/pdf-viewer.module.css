@@ -1,24 +1,27 @@
 .announcement-page {
-  width: min(100%, 1480px);
+  width: 100%;
   margin: 0 auto;
-  padding: 28px;
   box-sizing: border-box;
   text-align: left;
 }
 
 .announcement-page__heading {
-  display: flex;
-  margin-bottom: 20px;
-  align-items: flex-start;
-  justify-content: space-between;
+  display: flex;/*里面的组件变为横向排列布局*/
+  margin-bottom: 20px;/*当前标题区域下面留20px距离*/
+  align-items: flex-start;/*对齐方式，flex-start表示顶部对齐，center表示居中对齐，flex-end表示底部对齐，stretch表示拉伸对齐*/
+  justify-content: space-between;/*推动方式，space-between表示两端对齐，space-around表示平均分布*/
 }
 
 .announcement-page__heading :global(.ant-typography) {
+  /*
+  空格+.ant-typography表示在.announcement-page__heading下的.ant-typography
+  （因为原有的react组件antd的Typography组件会有指定的格式，边距等，这里手动覆盖）
+  */
   margin-top: 0;
   margin-bottom: 4px;
 }
 
-.hero {
+.hero{
   position: relative;
 }
 
@@ -52,7 +55,7 @@
 
 .stage {
   position: relative;
-  min-height: 620px;
+  min-height: 520px;
   padding: 24px;
   overflow: auto;
   border: 1px solid #dfe6e8;
@@ -91,10 +94,6 @@
 }
 
 @media (max-width: 767px) {
-  .announcement-page {
-    padding: 18px;
-  }
-
   .pdf-viewer__toolbar {
     align-items: flex-start;
     flex-direction: column;

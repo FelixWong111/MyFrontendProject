@@ -118,6 +118,8 @@ export function useAnnouncementPage() {
           setAnnouncementDetailError(
             getApiErrorMessage(reason, "公告详情加载失败，请稍后重试。", {
               ANNOUNCEMENT_NOT_FOUND: "当前公告已不存在，请刷新公告列表。",
+              DETAIL_NOT_FOUND:
+                "这个存量公告缺少详情数据，请联系后端完成数据迁移。",
             }),
           );
 

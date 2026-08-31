@@ -1,0 +1,271 @@
+.workbench {
+  display: grid;
+  min-width: 0;
+  gap: 18px;
+}
+
+.hero {
+  position: relative;
+  overflow: hidden;
+  padding: 26px;
+  border: 1px solid #dbe5e6;
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 96% 8%, rgb(24 145 134 / 0.12), transparent 31%),
+    #ffffff;
+  box-shadow: 0 2px 5px rgb(15 23 42 / 0.03);
+}
+
+.hero::before {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  background: linear-gradient(#1a9a8e, #0b6b64);
+  content: "";
+}
+
+.heroTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.heroCopy {
+  min-width: 0;
+}
+
+.statusRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.statusRow :global(.ant-tag) {
+  margin: 0;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+.statusRow :global(.ant-typography) {
+  max-width: 100%;
+  margin: 0;
+  color: #728388;
+  font-size: 10px;
+}
+
+.heroCopy :global(h1.ant-typography) {
+  max-width: 820px;
+  margin: 0 !important;
+  overflow-wrap: anywhere;
+  color: #172b35;
+  font-size: clamp(24px, 2.2vw, 34px);
+  line-height: 1.24;
+  letter-spacing: -0.035em;
+}
+
+.heroCopy :global(p.ant-typography) {
+  margin: 10px 0 0 !important;
+  color: #687a83;
+  font-size: 13px;
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.metric {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 12px;
+  border: 1px solid #e3eaeb;
+  border-radius: 10px;
+  background: rgb(250 252 252 / 0.88);
+}
+
+.metricIcon,
+.detailIcon {
+  display: grid;
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 9px;
+  background: #e7f5f2;
+  color: #0f766e;
+}
+
+.metric > span:last-child,
+.detailItem > span:last-child {
+  min-width: 0;
+}
+
+.metric small,
+.metric strong,
+.metric em,
+.detailItem small,
+.detailItem strong {
+  display: block;
+}
+
+.metric small,
+.detailItem small {
+  margin-bottom: 2px;
+  color: #849297;
+  font-size: 9px;
+  font-weight: 750;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.metric strong {
+  overflow: hidden;
+  color: #24343e;
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.metric em {
+  margin-top: 2px;
+  color: #71828b;
+  font-size: 9px;
+  font-style: normal;
+}
+
+.metric em.urgent {
+  color: #c54f37;
+}
+
+.detailGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.detailItem {
+  display: flex;
+  min-width: 0;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid #e7eded;
+  border-radius: 10px;
+}
+
+.detailIcon {
+  background: #eff3f7;
+  color: #566e8c;
+}
+
+.detailItem strong {
+  overflow-wrap: anywhere;
+  color: #2d4048;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.qualificationRow {
+  display: flex;
+  margin-top: 14px;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.qualificationLabel {
+  display: inline-flex;
+  flex: 0 0 auto;
+  min-height: 25px;
+  align-items: center;
+  gap: 6px;
+  color: #718288;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.tags {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tags :global(.ant-tag) {
+  margin: 0;
+  padding: 2px 9px;
+  white-space: normal;
+}
+
+.modifiedTime {
+  display: flex;
+  margin-top: 16px;
+  align-items: center;
+  gap: 5px;
+  color: #8a979b;
+  font-size: 10px;
+}
+
+.workspaceCard:global(.ant-card),
+.emptyCard:global(.ant-card) {
+  border: 1px solid #dfe7e8;
+  border-radius: 16px;
+  box-shadow: 0 1px 2px rgb(15 23 42 / 0.03);
+}
+
+.workspaceCard :global(.ant-tabs-nav) {
+  margin-bottom: 22px;
+}
+
+.emptyCard {
+  min-height: 420px;
+}
+
+.emptyCard :global(.ant-card-body),
+.emptyCard :global(.ant-spin-nested-loading),
+.emptyCard :global(.ant-spin-container) {
+  min-height: inherit;
+}
+
+.emptyCard :global(.ant-spin-container) {
+  display: grid;
+  place-items: center;
+}
+
+@media (max-width: 1160px) {
+  .metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .hero {
+    padding: 20px 18px;
+    border-radius: 14px;
+  }
+
+  .heroTop {
+    flex-direction: column;
+  }
+
+  .metrics,
+  .detailGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .qualificationRow {
+    flex-direction: column;
+  }
+
+  .workspaceCard :global(.ant-card-body) {
+    padding: 16px;
+  }
+}

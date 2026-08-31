@@ -1,0 +1,155 @@
+.manager {
+  display: grid;
+  gap: 18px;
+}
+
+.heading,
+.cardTop,
+.titleGroup,
+.qualifications {
+  display: flex;
+}
+
+.heading,
+.cardTop {
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.heading :global(.ant-typography),
+.cardTop :global(.ant-typography) {
+  margin: 0 !important;
+}
+
+.heading :global(h3.ant-typography) {
+  font-size: 18px;
+}
+
+.list {
+  display: grid;
+  gap: 12px;
+}
+
+.subLotCard:global(.ant-card) {
+  border-color: #dfe8e8;
+  transition: border-color 160ms ease, box-shadow 160ms ease, opacity 160ms ease;
+}
+
+.subLotCard:global(.ant-card):hover {
+  border-color: #b9d6d2;
+  box-shadow: 0 8px 24px rgb(31 77 74 / 0.07);
+}
+
+.dragging:global(.ant-card) {
+  border-color: #58a99f;
+  opacity: 0.62;
+}
+
+.titleGroup {
+  min-width: 0;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.dragHandle {
+  display: grid;
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border-radius: 8px;
+  background: #eef5f4;
+  color: #557a77;
+  cursor: grab;
+}
+
+.dragHandle:active {
+  cursor: grabbing;
+}
+
+.indexLabel:global(.ant-typography) {
+  display: block;
+  margin-bottom: 3px !important;
+  color: #7b9090;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.cardTop :global(h4.ant-typography) {
+  overflow-wrap: anywhere;
+  font-size: 16px;
+}
+
+.amountGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.amountItem {
+  padding: 13px 14px;
+  border: 1px solid #e6ecec;
+  border-radius: 10px;
+  background: #f8fafa;
+}
+
+.amountItem :global(.ant-typography),
+.amountItem strong,
+.amountItem small {
+  display: block;
+}
+
+.amountItem :global(.ant-typography) {
+  font-size: 11px;
+}
+
+.amountItem strong {
+  margin-top: 4px;
+  color: #1f343c;
+  font-size: 15px;
+}
+
+.amountItem small {
+  margin-top: 3px;
+  overflow-wrap: anywhere;
+  color: #839094;
+  font-size: 10px;
+}
+
+.qualifications {
+  margin-top: 16px;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.qualifications > :global(.ant-typography) {
+  flex: 0 0 auto;
+  padding-top: 3px;
+  font-size: 11px;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tags :global(.ant-tag) {
+  margin: 0;
+  white-space: normal;
+}
+
+@media (max-width: 767px) {
+  .heading,
+  .cardTop {
+    flex-direction: column;
+  }
+
+  .amountGrid {
+    grid-template-columns: 1fr;
+  }
+}

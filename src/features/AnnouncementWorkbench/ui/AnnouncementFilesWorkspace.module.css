@@ -1,0 +1,71 @@
+.workspace {
+  display: grid;
+  gap: 16px;
+}
+
+.previewGrid {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.38fr) minmax(0, 0.62fr);
+  align-items: start;
+  gap: 14px;
+}
+
+.attachmentsPanel,
+.previewPanel {
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid #e1e9e9;
+  border-radius: 12px;
+  background: #fbfcfc;
+}
+
+.panelHeading,
+.libraryHeading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.panelHeading :global(.ant-typography),
+.libraryHeading :global(.ant-typography) {
+  margin: 0 !important;
+}
+
+.panelHeading :global(h3.ant-typography),
+.libraryHeading :global(h3.ant-typography) {
+  font-size: 16px;
+}
+
+.panelHeading > :global(.anticon) {
+  color: #63928e;
+  font-size: 18px;
+}
+
+.libraryCollapse:global(.ant-collapse) {
+  border-color: #dfe8e8;
+  background: #f8fafa;
+}
+
+.libraryContent {
+  display: grid;
+  gap: 16px;
+}
+
+@media (max-width: 1080px) {
+  .previewGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 575px) {
+  .attachmentsPanel,
+  .previewPanel {
+    padding: 12px;
+  }
+
+  .libraryHeading {
+    flex-direction: column;
+  }
+}

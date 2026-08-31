@@ -1,19 +1,24 @@
-import { DeleteOutlined } from "@ant-design/icons";
+import {
+  ClockCircleOutlined,
+  DeleteOutlined,
+  FileTextOutlined,
+} from "@ant-design/icons";
 import {
   Alert,
   Button,
   Empty,
+  List,
   Popconfirm,
   Space,
-  Table,
   Tag,
   Typography,
 } from "antd";
-import type { TableColumnsType } from "antd";
 import { useState } from "react";
 
 import type { AnnouncementListItem } from "@/entities/Announcement/announcement";
 import { formatDateTime } from "@/shared/lib/format";
+
+import styles from "./AnnouncementList.module.css";
 
 interface AnnouncementListProps {
   announcements: AnnouncementListItem[];
@@ -51,67 +56,6 @@ export function AnnouncementList({
     }
   };
 
-  const columns: TableColumnsType<AnnouncementListItem> = [
-    {
-      title: "公告名称",
-      dataIndex: "name",
-      key: "name",
-      render: (name: string, announcement) => (
-        <Button type="link" onClick={() => onSelect(announcement)}>
-          {name}
-        </Button>
-      ),
-    },
-    {
-      title: "announcementId",
-      dataIndex: "id",
-      key: "id",
-      render: (id: string) => (
-        <Typography.Text copyable={{ text: id }} code>
-          {id}
-        </Typography.Text>
-      ),
-    },
-    {
-      title: "文件数",
-      dataIndex: "fileCount",
-      key: "fileCount",
-      width: 100,
-      render: (fileCount: number) => <Tag>{fileCount}</Tag>,
-    },
-    {
-      title: "最后修改时间",
-      dataIndex: "lastModifiedTime",
-      key: "lastModifiedTime",
-      width: 180,
-      render: (value: string) => formatDateTime(value),
-    },
-    {
-      title: "操作",
-      key: "actions",
-      width: 100,
-      render: (_, announcement) => (
-        <Popconfirm
-          title="删除公告"
-          description="将删除公告及其挂接关系，已上传的 File 不会被删除。"
-          okText="删除"
-          cancelText="取消"
-          okButtonProps={{ danger: true }}
-          onConfirm={() => handleDelete(announcement)}
-        >
-          <Button
-            danger
-            type="text"
-            icon={<DeleteOutlined />}
-            loading={deletingId === announcement.id}
-          >
-            删除
-          </Button>
-        </Popconfirm>
-      ),
-    },
-  ];
-
   return (
     <Space direction="vertical" size={12} style={{ width: "100%" }}>
       {error ? (
@@ -126,8 +70,8 @@ export function AnnouncementList({
           }
         />
       ) : null}
-      <Table<AnnouncementListItem>
-        columns={columns}
+      <List<AnnouncementListItem>
+        className={styles.list}
         dataSource={announcements}
         loading={loading}
         locale={{
@@ -138,17 +82,73 @@ export function AnnouncementList({
             />
           ),
         }}
-        pagination={false}
-        rowKey="id"
-        rowSelection={{
-          type: "radio",
-          selectedRowKeys: selectedAnnouncementId
-            ? [selectedAnnouncementId]
-            : [],
-          onSelect,
+        renderItem={(announcement) => {
+          const selected = selectedAnnouncementId === announcement.id;
+          return (
+            <List.Item className={styles.item}>
+              <div
+                className={`${styles.announcementCard} ${
+                  selected ? styles.selected : ""
+                }`}
+                role="button"
+                tabIndex={0}
+                aria-current={selected ? "true" : undefined}
+                onClick={() => onSelect(announcement)}
+                onKeyDown={(event) => {
+                  if (event.currentTarget !== event.target) {
+                    return;
+                  }
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    onSelect(announcement);
+                  }
+                }}
+              >
+                <div className={styles.cardHeading}>
+                  <span className={styles.documentIcon} aria-hidden="true">
+                    <FileTextOutlined />
+                  </span>
+                  <Typography.Text className={styles.name} ellipsis>
+                    {announcement.name}
+                  </Typography.Text>
+                  <div onClick={(event) => event.stopPropagation()}>
+                    <Popconfirm
+                      title="删除公告"
+                      description="将删除公告、详情及全部子标包；已上传文件不会被删除。"
+                      okText="删除"
+                      cancelText="取消"
+                      okButtonProps={{ danger: true }}
+                      onConfirm={() => handleDelete(announcement)}
+                    >
+                      <Button
+                        danger
+                        type="text"
+                        size="small"
+                        icon={<DeleteOutlined />}
+                        aria-label={`删除${announcement.name}`}
+                        loading={deletingId === announcement.id}
+                      />
+                    </Popconfirm>
+                  </div>
+                </div>
+
+                <div className={styles.metaRow}>
+                  <Tag>{announcement.fileCount} 个文件</Tag>
+                  {announcement.lastJobId ? (
+                    <Tag color="cyan">已有处理任务</Tag>
+                  ) : (
+                    <Tag>尚未处理</Tag>
+                  )}
+                </div>
+
+                <div className={styles.timeRow}>
+                  <ClockCircleOutlined />
+                  <span>{formatDateTime(announcement.lastModifiedTime)}</span>
+                </div>
+              </div>
+            </List.Item>
+          );
         }}
-        scroll={{ x: 820 }}
-        size="small"
       />
     </Space>
   );
