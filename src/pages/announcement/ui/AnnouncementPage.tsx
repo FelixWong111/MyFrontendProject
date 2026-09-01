@@ -3,7 +3,7 @@ import { App, Card, Tag, Typography } from "antd";
 import { AnnouncementList } from "@/entities/Announcement/AnnouncementList";
 import type {
   AnnouncementDetail,
-  AnnouncementListItem,
+  AnnouncementListEntry,
 } from "@/entities/Announcement/announcement";
 import { AnnouncementWorkbench } from "@/features/AnnouncementWorkbench/ui/AnnouncementWorkbench";
 import { CreateAnnouncement } from "@/features/Create-Announcement/ui/CreateAnnouncement";
@@ -19,6 +19,8 @@ export function AnnouncementPage() {
     announcements,
     announcementsLoading,
     announcementsError,
+    announcementsTotal,
+    announcementSearch,
     selectedAnnouncementId,
     selectedAnnouncement,
     announcementDetailLoading,
@@ -26,6 +28,10 @@ export function AnnouncementPage() {
     fileListRefreshKey,
     selectAnnouncement,
     refreshAnnouncements,
+    retryVisibleAnnouncements,
+    runAnnouncementSearch,
+    clearAnnouncementSearch,
+    changeAnnouncementSearchPage,
     refreshSelectedAnnouncement,
     refreshFiles,
     applyAnnouncementDetail,
@@ -33,7 +39,7 @@ export function AnnouncementPage() {
   } = useAnnouncementPage();
 
   const handleDeleteAnnouncement = async (
-    announcement: AnnouncementListItem,
+    announcement: AnnouncementListEntry,
   ) => {
     try {
       await deleteAnnouncement(announcement.id);
@@ -62,6 +68,7 @@ export function AnnouncementPage() {
   };
 
   const handleAnnouncementCreated = (announcement: AnnouncementDetail) => {
+    clearAnnouncementSearch();
     applyAnnouncementDetail(announcement, { select: true });
     refreshAnnouncements();
   };
@@ -103,7 +110,7 @@ export function AnnouncementPage() {
               <div>
                 <div className={styles.sidebarTitleRow}>
                   <Typography.Title level={2}>公告列表</Typography.Title>
-                  <Tag>{announcements.length}</Tag>
+                  <Tag>{announcementsTotal}</Tag>
                 </div>
                 <Typography.Paragraph>
                   选择公告后，在左侧工作台维护详情与子标包。
@@ -116,12 +123,20 @@ export function AnnouncementPage() {
             </div>
 
             <AnnouncementList
+              key={announcementSearch.resetKey}
               announcements={announcements}
               error={announcementsError}
               loading={announcementsLoading}
               selectedAnnouncementId={selectedAnnouncementId}
+              searchActive={announcementSearch.active}
+              searchPage={announcementSearch.page}
+              searchSize={announcementSearch.size}
+              searchTotal={announcementSearch.total}
+              onClearSearch={clearAnnouncementSearch}
               onDelete={handleDeleteAnnouncement}
-              onRetry={refreshAnnouncements}
+              onRetry={retryVisibleAnnouncements}
+              onSearch={runAnnouncementSearch}
+              onSearchPageChange={changeAnnouncementSearchPage}
               onSelect={(announcement) => selectAnnouncement(announcement.id)}
             />
           </Card>

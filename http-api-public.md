@@ -277,6 +277,72 @@
 
 `lastJobId` 与 `lastGeneratedCleanedAnnouncementTime` 均为 `string?`；从未提交过任务时为 `null`。
 
+### GET /api/v1/announcements/search
+
+公告关键字搜索（只读）。`keywords` 按空白切分为多个关键词（OR 语义：任一可搜索字段命中任一关键词即归入结果），可叠加两组相互独立的日期范围，返回按公告归类的命中结果。结果排序同公告列表：`lastModifiedTime` 降序，同刻按 `id` 降序。
+
+**查询参数：**
+
+| 查询参数 | 必填 | 约定 |
+|---|---|---|
+| `keywords` | 是 | 按空白切分（含全角空格、NBSP、Tab、换行等），丢弃空段后至少 1 个关键词；最多 20 个、每个不超过 100 字符；重复关键词去重（保留首次出现顺序） |
+| `deadlineFrom` / `deadlineTo` | 否 | 严格 `uuuu-MM-dd`（`ResolverStyle.STRICT`）；作用于投标截止日期（`detail.deadline`），闭区间；设定任一边界时，未填写截止日期的公告被排除 |
+| `modifiedFrom` / `modifiedTo` | 否 | 严格 `uuuu-MM-dd`（`ResolverStyle.STRICT`，UTC 日）：`modifiedFrom` 含当天 `00:00:00.000Z` 起，`modifiedTo` 含当天全天；作用于 `lastModifiedTime` |
+| `page` / `size` | 否 | 同文件列表分页：`page` 默认 `1`、从 1 起、不设上限（越界页返回 `200` 空列表）；`size` 默认 `20`，`1`–`100` |
+
+两组日期范围相互独立，可同时给定（叠加为 AND）；全部省略 = 不限日期。
+
+**可搜索字段与 path 语法：**
+
+path 把公告的三部分存储映射为同一公告实体：字段段以 `.` 连接；普通字符串数组元素以 `[索引]`（0 起）表示；`subLots` 数组元素以 `[子标包id]` 表示（不使用索引，子标包增删/重排后 path 仍稳定）。
+
+| 外部 path | 命中粒度 |
+|---|---|
+| `name` | 公告名称整值 |
+| `detail.projectCode` | 项目编号整值 |
+| `detail.tenderers[i]` | 招标机构第 i 个元素 |
+| `detail.agents[i]` | 代理机构第 i 个元素 |
+| `detail.qualifications[i]` | 通用资格第 i 个元素 |
+| `subLots[{id}].name` | 子标包名称整值 |
+| `subLots[{id}].estimatedAmountNote` | 预估金额说明整值 |
+| `subLots[{id}].maxPriceNote` | 最高限价说明整值 |
+| `subLots[{id}].depositNote` | 保证金说明整值 |
+| `subLots[{id}].qualifications[i]` | 子标包资格第 i 个元素 |
+
+不参与关键词匹配：全部结构性 id 字段（公告/详情/子标包 id 与 `detail.subLotIds`）、日期时间字段（由日期范围参数负责过滤）、金额整数字段。`lastJobId` 属 id 类字段，不参与匹配，仅随结果基本信息返回。`lastJobDirectory` 为服务器内部绝对路径，既不参与匹配，也绝不出现在任何响应中。
+
+**响应 200：**
+
+```json
+{
+  "results": [
+    {
+      "id": "ann-7c1e...",
+      "name": "某电缆储检一体化库项目招标公告",
+      "lastModifiedTime": "2026-08-14T10:05:00Z",
+      "lastGeneratedCleanedAnnouncementTime": null,
+      "lastJobId": null,
+      "hits": {
+        "name": { "value": "某电缆储检一体化库项目招标公告", "matchedKeywords": ["电缆"] },
+        "detail.tenderers[0]": { "value": "某市电缆产业投资集团", "matchedKeywords": ["电缆", "集团"] },
+        "subLots[sublot-9f2a...].qualifications[1]": { "value": "具备电缆生产相关资质", "matchedKeywords": ["资质"] }
+      }
+    }
+  ],
+  "page": 1,
+  "size": 20,
+  "total": 1
+}
+```
+
+- `results` 元素的基本信息只含公告字段（`id` / `name` / `lastModifiedTime` / `lastGeneratedCleanedAnnouncementTime` / `lastJobId`），可空字段始终显式返回 `null`；不含 `fileCount` 与文件明细。
+- `hits` 键为上述 path，值为该字段完整值 `value` 与命中它的原始关键词列表 `matchedKeywords`（按请求中出现顺序、去重）。键的顺序固定：`name` → `detail.projectCode` → `detail.tenderers` → `detail.agents` → `detail.qualifications` → `subLots`（按 `subLotIds` 展示顺序）。
+- `page` / `size` / `total` 语义同文件分页：`total` 为命中公告总数；越界页返回 `200` 空 `results`。
+
+**错误 400（`INVALID_REQUEST`）：** `keywords` 缺失/全空白/切分后无有效关键词/超过 20 个或单个超过 100 字符；任一日期非法或 `from > to`；`page`/`size` 为非十进制整数/空串/`page < 1`/`size` 越界。
+
+**错误 500（`INTERNAL_ERROR`）：** 内部错误；`message` 固定为 `Internal server error`。
+
 ### GET /api/v1/announcements/{announcementId}
 
 公告详情，含扁平 `files` 与内嵌的 1:1 公告详情 `detail`。
@@ -765,7 +831,7 @@
 
 | HTTP | code | 场景 |
 | --- | --- | --- |
-| 400 | `INVALID_REQUEST` | JSON/multipart 非法、相对路径非法、公告名为空、空上传、分页 `page`/`size` 非法、详情/子标包字段非法（金额、日期、数组元素等） |
+| 400 | `INVALID_REQUEST` | JSON/multipart 非法、相对路径非法、公告名为空、空上传、分页 `page`/`size` 非法、详情/子标包字段非法（金额、日期、数组元素等）、搜索参数非法（`keywords`、日期范围、`page`/`size`） |
 | 404 | `ANNOUNCEMENT_NOT_FOUND` | 公告不存在（子标包路由统一优先判定） |
 | 404 | `DETAIL_NOT_FOUND` | 公告缺少详情行（仅阶段 12 早期创建的存量数据可能出现；新建公告必带详情） |
 | 404 | `SUB_LOT_NOT_FOUND` | 子标包不存在或不属于该公告 |
@@ -782,6 +848,7 @@
 | 409 | `NO_RESUMABLE_JOB` | 公告尚无成功/可恢复的 job 工作区 |
 | 413 | `UPLOAD_TOO_LARGE` | 超过 100 MiB |
 | 500 | `JOB_ACCEPT_TIMEOUT` / `INVALID_TREE` / `TC-*` | 接受超时、损坏的目录树、内部错误 |
+| 500 | `INTERNAL_ERROR` | 搜索端点内部错误（`message` 固定为 `Internal server error`） |
 | 503 | `JOB_QUEUE_FULL` | 并发任务已满 |
 | 503 | `SERVER_SHUTTING_DOWN` | 服务器正在关闭 |
 
