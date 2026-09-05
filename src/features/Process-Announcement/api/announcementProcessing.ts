@@ -76,6 +76,16 @@ export async function cleanAnnouncement(
   return response.data;
 }
 
+export async function resumeAnnouncement(
+  announcementId: string,
+): Promise<CleanJobAccepted> {
+  const response = await httpClient.post<CleanJobAccepted>(
+    `/api/v1/announcements/${announcementId}/resume`,
+    { force: false },
+  );
+  return response.data;
+}
+
 export async function getCleanJob(jobId: string): Promise<CleanJob> {
   const response = await httpClient.get<CleanJob>(`/api/v1/jobs/${jobId}`);
   return response.data;

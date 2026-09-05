@@ -121,6 +121,14 @@
   font-size: 13px;
 }
 
+.resumeAlert {
+  margin-top: 2px;
+}
+
+.resumeAlert :global(.ant-alert-action) {
+  align-self: center;
+}
+
 .matchResult {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -217,6 +225,15 @@
 }
 
 @media (max-width: 640px) {
+  .resumeAlert:global(.ant-alert) {
+    align-items: flex-start;
+  }
+
+  .resumeAlert :global(.ant-alert-action) {
+    margin-inline-start: 0;
+    padding-top: 10px;
+  }
+
   .matchResult {
     grid-template-columns: 1fr;
   }

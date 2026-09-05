@@ -3,6 +3,7 @@ import {
   CloseCircleOutlined,
   DeploymentUnitOutlined,
   FileSearchOutlined,
+  RedoOutlined,
   ReloadOutlined,
 } from "@ant-design/icons";
 import {
@@ -30,6 +31,7 @@ import {
   getAnnouncementMatchResult,
   getCleanJob,
   matchAnnouncement,
+  resumeAnnouncement,
   type AnnouncementMatchResult,
   type CleanJob,
   type CleanJobAccepted,
@@ -49,7 +51,7 @@ interface AnnouncementProcessingWorkspaceProps {
   onStateMayHaveChanged: () => void;
 }
 
-type RunningAction = "clean" | "extract" | "match" | null;
+type RunningAction = "clean" | "resume" | "extract" | "match" | null;
 type VisibleCleanJob = CleanJob | CleanJobAccepted;
 
 const POLL_INTERVAL_MS = 2_500;
@@ -323,6 +325,42 @@ export function AnnouncementProcessingWorkspace({
     }
   };
 
+  const handleResume = async () => {
+    if (action) return;
+    setAction("resume");
+
+    try {
+      const acceptedJob = await resumeAnnouncement(announcement.id);
+      setJob(acceptedJob);
+      setJobError("");
+      setJobUnavailable(false);
+      beginPolling();
+      await refreshAnnouncementSnapshot();
+      message.success("清理恢复任务已提交。");
+    } catch (reason) {
+      const apiError = getApiError(reason);
+      message.error(
+        getApiErrorMessage(reason, "清理恢复提交失败，请稍后重试。", {
+          NO_RESUMABLE_JOB: "没有可恢复的清理任务，请重新运行清理。",
+          ANNOUNCEMENT_JOB_RUNNING: "当前公告已有正在运行的清理任务。",
+          JOB_ALREADY_RUNNING: "该清理任务已经在运行。",
+          ANNOUNCEMENT_NOT_FOUND: "当前公告已不存在，请刷新列表。",
+          JOB_QUEUE_FULL: "清理任务队列已满，请稍后重试。",
+          SERVER_SHUTTING_DOWN: "服务正在关闭，暂时不能提交任务。",
+        }),
+      );
+      if (
+        apiError.code === "ANNOUNCEMENT_NOT_FOUND" ||
+        apiError.code === "ANNOUNCEMENT_JOB_RUNNING" ||
+        apiError.code === "JOB_ALREADY_RUNNING"
+      ) {
+        onStateMayHaveChanged();
+      }
+    } finally {
+      setAction(null);
+    }
+  };
+
   const handleMatch = async () => {
     if (action) return;
     setAction("match");
@@ -354,6 +392,8 @@ export function AnnouncementProcessingWorkspace({
   const cleanMeta = cleanStatus ? CLEAN_STATUS_META[cleanStatus] : null;
   const fullJob = job && "progress" in job ? job : null;
   const cleanProgress = fullJob?.progress;
+  const canResume =
+    cleanStatus === "FAILED" || cleanStatus === "COMPLETED_WITH_ERRORS";
   const progressPercent = cleanProgress?.phaseCount
     ? Math.min(
         100,
@@ -494,6 +534,28 @@ export function AnnouncementProcessingWorkspace({
                     <span>处理中 {cleanProgress.files.running}</span>
                     <span>失败 {cleanProgress.files.failed}</span>
                   </div>
+                ) : null}
+                {canResume ? (
+                  <Alert
+                    className={styles.resumeAlert}
+                    type="warning"
+                    showIcon
+                    message={
+                      cleanStatus === "FAILED"
+                        ? "这个清理任务失败，可以尝试从最近工作区恢复。"
+                        : "部分文件处理失败，可以恢复任务继续处理。"
+                    }
+                    action={
+                      <Button
+                        icon={<RedoOutlined />}
+                        loading={action === "resume"}
+                        disabled={Boolean(action)}
+                        onClick={() => void handleResume()}
+                      >
+                        恢复任务
+                      </Button>
+                    }
+                  />
                 ) : null}
               </div>
             ) : jobError ? (
