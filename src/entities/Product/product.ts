@@ -40,6 +40,24 @@ export async function createProduct(input: ProductInput): Promise<Product> {
   return response.data;
 }
 
+export async function getProduct(productId: string): Promise<Product> {
+  const response = await httpClient.get<Product>(
+    `/api/v1/products/${productId}`,
+  );
+  return response.data;
+}
+
+export async function updateProduct(
+  productId: string,
+  input: ProductInput,
+): Promise<Product> {
+  const response = await httpClient.put<Product>(
+    `/api/v1/products/${productId}`,
+    input,
+  );
+  return response.data;
+}
+
 export async function deleteProduct(productId: string): Promise<void> {
   await httpClient.delete<void>(`/api/v1/products/${productId}`);
 }

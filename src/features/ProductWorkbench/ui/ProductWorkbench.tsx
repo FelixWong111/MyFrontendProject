@@ -1,5 +1,6 @@
 import {
   DeleteOutlined,
+  EditOutlined,
   PlusOutlined,
   TagsOutlined,
 } from "@ant-design/icons";
@@ -11,9 +12,7 @@ import {
   Drawer,
   Empty,
   Form,
-  Input,
   Popconfirm,
-  Select,
   Space,
   Table,
   Tag,
@@ -27,8 +26,13 @@ import {
   deleteProduct,
   listProducts,
   type Product,
-  type ProductInput,
 } from "@/entities/Product/product";
+import {
+  normalizeProductInput,
+  type ProductFormValues,
+} from "@/features/ProductWorkbench/model/productForm";
+import { ProductEditDrawer } from "@/features/ProductWorkbench/ui/ProductEditDrawer";
+import { ProductFormFields } from "@/features/ProductWorkbench/ui/ProductFormFields";
 import {
   getApiError,
   getApiErrorMessage,
@@ -36,28 +40,6 @@ import {
 import { formatDateTime } from "@/shared/lib/format";
 
 import styles from "./ProductWorkbench.module.css";
-
-interface ProductFormValues {
-  name: string;
-  keywords?: string[];
-  description: string;
-}
-
-function normalizeProductInput(values: ProductFormValues): ProductInput {
-  const keywords = [
-    ...new Set(
-      (values.keywords ?? [])
-        .map((keyword) => keyword.trim())
-        .filter(Boolean),
-    ),
-  ];
-
-  return {
-    name: values.name.trim(),
-    keywords,
-    description: values.description.trim(),
-  };
-}
 
 export function ProductWorkbench() {
   const { message } = App.useApp();
@@ -68,6 +50,7 @@ export function ProductWorkbench() {
   const [createOpen, setCreateOpen] = useState(false);
   const [creating, setCreating] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
   const loadProducts = useCallback(async () => {
     setLoading(true);
@@ -141,6 +124,26 @@ export function ProductWorkbench() {
     }
   };
 
+  const handleProductUpdated = (updatedProduct: Product) => {
+    setProducts((current) =>
+      current.map((product) =>
+        product.id === updatedProduct.id ? updatedProduct : product,
+      ),
+    );
+    setEditingProduct(null);
+  };
+
+  const handleProductMissing = useCallback(
+    (productId: string) => {
+      setEditingProduct(null);
+      setProducts((current) =>
+        current.filter((product) => product.id !== productId),
+      );
+      void loadProducts();
+    },
+    [loadProducts],
+  );
+
   const columns: TableProps<Product>["columns"] = [
     {
       title: "产品名称",
@@ -202,27 +205,36 @@ export function ProductWorkbench() {
     {
       title: "操作",
       key: "actions",
-      width: 88,
+      width: 190,
       align: "right",
       render: (_, product) => (
-        <Popconfirm
-          title="删除产品"
-          description="删除不会改变已有匹配结果中的产品名称快照。"
-          okText="删除"
-          cancelText="取消"
-          okButtonProps={{ danger: true }}
-          onConfirm={() => handleDelete(product)}
-        >
+        <Space size={2}>
           <Button
-            danger
             type="text"
-            icon={<DeleteOutlined />}
-            loading={deletingId === product.id}
-            aria-label={`删除产品${product.name}`}
+            icon={<EditOutlined />}
+            onClick={() => setEditingProduct(product)}
           >
-            删除
+            查看/编辑
           </Button>
-        </Popconfirm>
+          <Popconfirm
+            title="删除产品"
+            description="删除不会改变已有匹配结果中的产品名称快照。"
+            okText="删除"
+            cancelText="取消"
+            okButtonProps={{ danger: true }}
+            onConfirm={() => handleDelete(product)}
+          >
+            <Button
+              danger
+              type="text"
+              icon={<DeleteOutlined />}
+              loading={deletingId === product.id}
+              aria-label={`删除产品${product.name}`}
+            >
+              删除
+            </Button>
+          </Popconfirm>
+        </Space>
       ),
     },
   ];
@@ -305,63 +317,17 @@ export function ProductWorkbench() {
           initialValues={{ keywords: [] }}
           onFinish={(values) => void handleCreate(values)}
         >
-          <Form.Item
-            label="产品名称"
-            name="name"
-            rules={[
-              { required: true, whitespace: true, message: "请输入产品名称" },
-              { max: 100, message: "产品名称不能超过 100 个字符" },
-            ]}
-          >
-            <Input maxLength={100} showCount placeholder="例如：烟感探测器" />
-          </Form.Item>
-
-          <Form.Item
-            label="匹配关键词"
-            name="keywords"
-            extra="输入后按回车确认，可使用逗号分隔；最多 50 个，每个不超过 50 个字符。"
-            rules={[
-              {
-                validator: (_, value: string[] | undefined) => {
-                  const keywords = value ?? [];
-                  if (keywords.length > 50) {
-                    return Promise.reject(new Error("关键词最多 50 个"));
-                  }
-                  if (keywords.some((keyword) => keyword.trim().length > 50)) {
-                    return Promise.reject(
-                      new Error("每个关键词不能超过 50 个字符"),
-                    );
-                  }
-                  return Promise.resolve();
-                },
-              },
-            ]}
-          >
-            <Select
-              mode="tags"
-              open={false}
-              placeholder="例如：烟感、火灾报警"
-              tokenSeparators={[",", "，"]}
-            />
-          </Form.Item>
-
-          <Form.Item
-            label="产品简介"
-            name="description"
-            rules={[
-              { required: true, whitespace: true, message: "请输入产品简介" },
-              { max: 2000, message: "产品简介不能超过 2000 个字符" },
-            ]}
-          >
-            <Input.TextArea
-              autoSize={{ minRows: 6, maxRows: 12 }}
-              maxLength={2000}
-              showCount
-              placeholder="说明产品能力、供货范围和适用场景。"
-            />
-          </Form.Item>
+          <ProductFormFields />
         </Form>
       </Drawer>
+
+      <ProductEditDrawer
+        open={Boolean(editingProduct)}
+        product={editingProduct}
+        onClose={() => setEditingProduct(null)}
+        onUpdated={handleProductUpdated}
+        onProductMissing={handleProductMissing}
+      />
     </section>
   );
 }
