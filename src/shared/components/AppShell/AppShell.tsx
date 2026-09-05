@@ -47,7 +47,7 @@ export function AppShell({ children, headerActions }: AppShellProps) {
               王
             </Avatar>
             <span className={styles.accountCopy}>
-              <Typography.Text>王以乐</Typography.Text>
+              <Typography.Text>杨中民</Typography.Text>
               <small>审核负责人</small>
             </span>
             <DownOutlined className={styles.accountChevron} />
