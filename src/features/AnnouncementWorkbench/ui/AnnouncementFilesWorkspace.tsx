@@ -17,8 +17,8 @@ import type {
 import { getFileContent } from "@/entities/Content-file/getFileContent";
 import type { FileItem } from "@/entities/List-files/listFiles";
 import { AttachFile } from "@/features/Attach-file/ui/AttachFile";
+import { AnnouncementFileTree } from "@/features/AnnouncementWorkbench/ui/AnnouncementFileTree";
 import { deleteFile } from "@/features/Delete-file/api/deleteFile";
-import { AttachedFiles } from "@/features/Detach-file/ui/AttachedFiles";
 import { UploadFile } from "@/features/Upload-file/ui/UploadFile";
 import { getApiError, getApiErrorMessage } from "@/shared/api/apiError";
 import {
@@ -206,13 +206,13 @@ export function AnnouncementFilesWorkspace({
             </div>
             <PaperClipOutlined />
           </div>
-          <AttachedFiles
+          <AnnouncementFileTree
             announcement={announcement}
-            error={announcementError}
-            loading={announcementLoading}
+            announcementError={announcementError}
+            announcementLoading={announcementLoading}
             selectedFileId={activePreviewFile?.fileId ?? null}
             onDetached={handleFilesChanged}
-            onRetry={onRefreshAnnouncement}
+            onRetryAnnouncement={onRefreshAnnouncement}
             onSelectFile={selectAttachment}
             onStateMayHaveChanged={onStateMayHaveChanged}
           />

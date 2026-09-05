@@ -1,0 +1,81 @@
+.wrapper {
+  display: grid;
+  gap: 12px;
+  min-height: 180px;
+}
+
+.tree:global(.ant-tree) {
+  padding: 5px;
+  border-radius: 10px;
+  background: transparent;
+}
+
+.tree :global(.ant-tree-treenode) {
+  width: 100%;
+  padding-block: 2px;
+}
+
+.tree :global(.ant-tree-node-content-wrapper) {
+  min-width: 0;
+}
+
+.tree :global(.ant-tree-title) {
+  display: block;
+  min-width: 0;
+}
+
+.directoryName {
+  color: #344a53;
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.fileNode {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.fileCopy {
+  display: grid;
+  min-width: 0;
+  gap: 1px;
+}
+
+.fileCopy :global(.ant-typography) {
+  max-width: 210px;
+  margin: 0;
+  color: #334851;
+  font-size: 14px;
+}
+
+.fileCopy small {
+  color: #829096;
+  font-size: 12px;
+}
+
+.fileNode :global(.ant-btn) {
+  flex: 0 0 auto;
+  opacity: 0;
+}
+
+.fileNode:hover :global(.ant-btn),
+.fileNode:focus-within :global(.ant-btn) {
+  opacity: 1;
+}
+
+.loadingSpace {
+  min-height: 160px;
+}
+
+@media (max-width: 575px) {
+  .fileNode :global(.ant-btn) {
+    opacity: 1;
+  }
+
+  .fileCopy :global(.ant-typography) {
+    max-width: 180px;
+  }
+}
