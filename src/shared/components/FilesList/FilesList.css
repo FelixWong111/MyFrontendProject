@@ -16,6 +16,15 @@
   background: #edf8f6 !important;
 }
 
+.files-list__reference-button.ant-btn {
+  height: auto;
+  padding: 0;
+}
+
+.files-list__reference-button .ant-tag {
+  margin-inline-end: 0;
+}
+
 @media (max-width: 767px) {
   .files-list__name.ant-btn {
     max-width: 220px;

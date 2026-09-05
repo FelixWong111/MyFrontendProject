@@ -56,8 +56,13 @@
   font-size: 12px;
 }
 
-.fileNode :global(.ant-btn) {
+.fileActions {
+  display: inline-flex;
   flex: 0 0 auto;
+  align-items: center;
+}
+
+.fileNode :global(.ant-btn) {
   opacity: 0;
 }
 

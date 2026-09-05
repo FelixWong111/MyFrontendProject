@@ -11,9 +11,13 @@ export interface FileDetail extends FileItem {
   attachments: Attachment[];
 }
 
-export async function getFileDetail(fileId: string): Promise<FileDetail> {
+export async function getFileDetail(
+  fileId: string,
+  signal?: AbortSignal,
+): Promise<FileDetail> {
   const response = await httpClient.get<FileDetail>(
     `/api/v1/files/${fileId}`,
+    { signal },
   );
 
   return response.data;

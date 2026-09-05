@@ -4,6 +4,7 @@ import {
   FilePdfOutlined,
   FileWordOutlined,
   FolderOutlined,
+  InfoCircleOutlined,
 } from "@ant-design/icons";
 import {
   Alert,
@@ -44,6 +45,7 @@ interface AnnouncementFileTreeProps {
   onRetryAnnouncement: () => void;
   onSelectFile: (file: AnnouncementFile) => void;
   onStateMayHaveChanged: () => void;
+  onViewDetails: (file: AnnouncementFile) => void;
 }
 
 interface FileTreeDataNode extends TreeDataNode {
@@ -83,6 +85,7 @@ export function AnnouncementFileTree({
   onRetryAnnouncement,
   onSelectFile,
   onStateMayHaveChanged,
+  onViewDetails,
 }: AnnouncementFileTreeProps) {
   const { message } = App.useApp();
   const [tree, setTree] = useState<AnnouncementTreeResponse | null>(null);
@@ -203,23 +206,35 @@ export function AnnouncementFileTree({
               <Typography.Text ellipsis>{node.name}</Typography.Text>
               <small>{formatFileSize(node.sizeBytes)}</small>
             </span>
-            <Popconfirm
-              title="卸下文件"
-              description="只解除当前公告的挂接，不会删除已上传文件。"
-              okText="卸下"
-              cancelText="取消"
-              onConfirm={() => void handleDetach(attachment)}
-            >
+            <span className={styles.fileActions}>
               <Button
-                danger
                 type="text"
                 size="small"
-                icon={<DisconnectOutlined />}
-                loading={detachingFileId === node.fileId}
-                aria-label={`卸下${node.originalName}`}
-                onClick={(event) => event.stopPropagation()}
+                icon={<InfoCircleOutlined />}
+                aria-label={`查看${node.originalName}详情`}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  onViewDetails(attachment);
+                }}
               />
-            </Popconfirm>
+              <Popconfirm
+                title="卸下文件"
+                description="只解除当前公告的挂接，不会删除已上传文件。"
+                okText="卸下"
+                cancelText="取消"
+                onConfirm={() => void handleDetach(attachment)}
+              >
+                <Button
+                  danger
+                  type="text"
+                  size="small"
+                  icon={<DisconnectOutlined />}
+                  loading={detachingFileId === node.fileId}
+                  aria-label={`卸下${node.originalName}`}
+                  onClick={(event) => event.stopPropagation()}
+                />
+              </Popconfirm>
+            </span>
           </div>
         ),
       };

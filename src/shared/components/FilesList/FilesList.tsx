@@ -3,6 +3,7 @@ import {
   FileOutlined,
   FilePdfOutlined,
   FileWordOutlined,
+  InfoCircleOutlined,
 } from "@ant-design/icons";
 import {
   Alert,
@@ -33,6 +34,7 @@ interface FileListProps {
   selectedFileId: string | null;
   onDeleteFile: (file: FileItem) => Promise<void>;
   onSelectFile: (file: FileItem) => void;
+  onViewDetails: (file: FileItem) => void;
 }
 
 export function FileList({
@@ -40,6 +42,7 @@ export function FileList({
   selectedFileId,
   onDeleteFile,
   onSelectFile,
+  onViewDetails,
 }: FileListProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [files, setFiles] = useState<FileItem[]>([]);
@@ -162,18 +165,34 @@ export function FileList({
       render: (createdAt: string) => formatDateTime(createdAt),
     },
     {
-      title: "挂接公告数",
+      title: "引用次数",
       dataIndex: "attachmentCount",
       key: "attachmentCount",
       width: 120,
-      render: (count: number) => (
-        <Tag color={count > 0 ? "blue" : "default"}>{count}</Tag>
+      render: (count: number, file) => (
+        <Tooltip
+          title={
+            count > 0
+              ? `查看该文件在 ${count} 个公告中的引用`
+              : "查看文件详情"
+          }
+        >
+          <Button
+            className="files-list__reference-button"
+            type="text"
+            size="small"
+            aria-label={`查看文件详情，引用次数 ${count}`}
+            onClick={() => onViewDetails(file)}
+          >
+            <Tag color={count > 0 ? "blue" : "default"}>{count}</Tag>
+          </Button>
+        </Tooltip>
       ),
     },
     {
       title: "操作",
       key: "actions",
-      width: 100,
+      width: 190,
       render: (_, file) => {
         const deleteButton = (
           <Button
@@ -187,25 +206,35 @@ export function FileList({
           </Button>
         );
 
-        if (file.attachmentCount > 0) {
-          return (
+        const deleteAction =
+          file.attachmentCount > 0 ? (
             <Tooltip title="该 File 仍被公告挂接，请先从所有公告中卸下。">
               <span>{deleteButton}</span>
             </Tooltip>
+          ) : (
+            <Popconfirm
+              title="删除 File"
+              description="将永久删除这个已上传 File，且无法恢复。"
+              okText="删除"
+              cancelText="取消"
+              okButtonProps={{ danger: true }}
+              onConfirm={() => handleDelete(file)}
+            >
+              {deleteButton}
+            </Popconfirm>
           );
-        }
 
         return (
-          <Popconfirm
-            title="删除 File"
-            description="将永久删除这个已上传 File，且无法恢复。"
-            okText="删除"
-            cancelText="取消"
-            okButtonProps={{ danger: true }}
-            onConfirm={() => handleDelete(file)}
-          >
-            {deleteButton}
-          </Popconfirm>
+          <Space size={4}>
+            <Button
+              type="text"
+              icon={<InfoCircleOutlined />}
+              onClick={() => onViewDetails(file)}
+            >
+              详情
+            </Button>
+            {deleteAction}
+          </Space>
         );
       },
     },

@@ -8,7 +8,7 @@ import {
   Spin,
   Typography,
 } from "antd";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import type {
   AnnouncementDetail,
@@ -19,6 +19,10 @@ import type { FileItem } from "@/entities/List-files/listFiles";
 import { AttachFile } from "@/features/Attach-file/ui/AttachFile";
 import { AnnouncementFileTree } from "@/features/AnnouncementWorkbench/ui/AnnouncementFileTree";
 import { deleteFile } from "@/features/Delete-file/api/deleteFile";
+import {
+  FileDetailDrawer,
+  type FileDetailTarget,
+} from "@/features/FileDetails/ui/FileDetailDrawer";
 import { UploadFile } from "@/features/Upload-file/ui/UploadFile";
 import { getApiError, getApiErrorMessage } from "@/shared/api/apiError";
 import {
@@ -60,6 +64,7 @@ export function AnnouncementFilesWorkspace({
   const { message } = App.useApp();
   const [selectedLibraryFile, setSelectedLibraryFile] =
     useState<FileItem | null>(null);
+  const [detailFile, setDetailFile] = useState<FileDetailTarget | null>(null);
   const [previewFile, setPreviewFile] = useState<PreviewFile | null>(null);
   const [documentBlob, setDocumentBlob] = useState<Blob | null>(null);
   const [fileContentLoading, setFileContentLoading] = useState(false);
@@ -73,6 +78,31 @@ export function AnnouncementFilesWorkspace({
       : previewFile;
   const previewKind = getDocumentPreviewKind(activePreviewFile?.originalName);
   const canPreview = canPreviewDocument(activePreviewFile?.originalName);
+
+  const handleDetailFileMissing = useCallback(
+    (fileId: string) => {
+      setDetailFile(null);
+
+      if (selectedLibraryFile?.fileId === fileId) {
+        setSelectedLibraryFile(null);
+      }
+      if (previewFile?.fileId === fileId) {
+        setPreviewFile(null);
+        setDocumentBlob(null);
+        setFileError("");
+        setFileContentLoading(false);
+      }
+
+      onRefreshFiles();
+      onStateMayHaveChanged();
+    },
+    [
+      onRefreshFiles,
+      onStateMayHaveChanged,
+      previewFile?.fileId,
+      selectedLibraryFile?.fileId,
+    ],
+  );
 
   useEffect(() => {
     if (!activePreviewFile || !canPreview) {
@@ -152,6 +182,9 @@ export function AnnouncementFilesWorkspace({
         setPreviewFile(null);
         setDocumentBlob(null);
       }
+      if (detailFile?.fileId === file.fileId) {
+        setDetailFile(null);
+      }
       onRefreshFiles();
     } catch (reason) {
       const apiError = getApiError(reason);
@@ -215,6 +248,7 @@ export function AnnouncementFilesWorkspace({
             onRetryAnnouncement={onRefreshAnnouncement}
             onSelectFile={selectAttachment}
             onStateMayHaveChanged={onStateMayHaveChanged}
+            onViewDetails={setDetailFile}
           />
         </section>
 
@@ -291,6 +325,7 @@ export function AnnouncementFilesWorkspace({
                   selectedFileId={selectedLibraryFile?.fileId ?? null}
                   onDeleteFile={handleDeleteFile}
                   onSelectFile={selectLibraryFile}
+                  onViewDetails={setDetailFile}
                 />
                 <AttachFile
                   announcement={announcement}
@@ -307,6 +342,14 @@ export function AnnouncementFilesWorkspace({
             ),
           },
         ]}
+      />
+
+      <FileDetailDrawer
+        file={detailFile}
+        open={Boolean(detailFile)}
+        refreshKey={fileListRefreshKey}
+        onClose={() => setDetailFile(null)}
+        onFileMissing={handleDetailFileMissing}
       />
     </div>
   );
