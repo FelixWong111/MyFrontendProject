@@ -11,9 +11,10 @@ import styles from "./AppShell.module.css";
 
 interface AppShellProps {
   children: ReactNode;
+  headerActions?: ReactNode;
 }
 
-export function AppShell({ children }: AppShellProps) {
+export function AppShell({ children, headerActions }: AppShellProps) {
   return (
     <Layout className={styles.layout}>
       <Layout.Header className={styles.header}>
@@ -34,6 +35,7 @@ export function AppShell({ children }: AppShellProps) {
 
           <Space className={styles.account} size={10}>
             <ServiceStatus />
+            {headerActions}
             <Button
               type="text"
               shape="circle"

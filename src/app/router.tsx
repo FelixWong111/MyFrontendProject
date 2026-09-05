@@ -3,11 +3,12 @@ import { AppShell } from "@/shared/components/AppShell/AppShell";  //一些不�
 import { appConfig } from "@/shared/config/appConfig";             //导入应用配置对象appConfig，包含应用的名称、默认招标ID
 import { AnnouncementPage } from "@/pages/announcement/ui/AnnouncementPage";//导入招标详情页面组件TenderDetailPage，用于显示特定招标的详细信息
 import { NotFoundPage } from "@/pages/not-found/NotFoundPage";//导入404页面组件NotFoundPage，用于处理未匹配的路由请求
+import { TaskCenter } from "@/features/TaskCenter/ui/TaskCenter";
 
 export const router = createBrowserRouter([ //使用createBrowserRouter函数创建浏览器路由对象router,该函数接收一个数组，数组中每个对象表示一个路由规则
     {
         element:(  //element是react router中定义的路由规则的属性之一，表示该路由对应的组件元素
-            <AppShell>
+            <AppShell headerActions={<TaskCenter />}>
                 <AnnouncementPage />
             </AppShell>    //<AppShell>组件包裹<AnnouncementPage />组件，提供应用的整体布局和样式
         ),
@@ -25,7 +26,7 @@ export const router = createBrowserRouter([ //使用createBrowserRouter函数创
     {
         path: "*",//匹配所有未定义的路由路径，通常用于处理404页面
         element:(
-            <AppShell>
+            <AppShell headerActions={<TaskCenter />}>
                 <NotFoundPage />
             </AppShell>
         ),

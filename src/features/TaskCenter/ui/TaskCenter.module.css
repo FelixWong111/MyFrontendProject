@@ -1,0 +1,141 @@
+.trigger:global(.ant-btn) {
+  height: 34px;
+  padding-inline: 9px;
+  border: 1px solid rgb(255 255 255 / 0.1);
+  color: #d7e6e5;
+}
+
+.trigger:global(.ant-btn:hover) {
+  border-color: rgb(255 255 255 / 0.18) !important;
+}
+
+.triggerLabel {
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.drawerContent {
+  display: grid;
+  gap: 16px;
+}
+
+.summary {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #e7eded;
+}
+
+.summary > span {
+  display: grid;
+  gap: 4px;
+}
+
+.summary :global(.ant-typography) {
+  font-size: 13px;
+}
+
+.jobList :global(.ant-list-items) {
+  display: grid;
+  gap: 10px;
+}
+
+.jobItem:global(.ant-list-item) {
+  padding: 0;
+  border: 0;
+}
+
+.jobCard {
+  display: grid;
+  width: 100%;
+  gap: 13px;
+  padding: 15px;
+  border: 1px solid #e0e8e8;
+  border-radius: 12px;
+  background: #fbfdfd;
+}
+
+.jobHeading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.jobHeading > span {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+}
+
+.jobHeading > span > :global(.ant-typography) {
+  max-width: 290px;
+  margin: 0;
+}
+
+.jobHeading :global(.ant-tag) {
+  margin: 0;
+}
+
+.phaseRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: #16776e;
+}
+
+.phaseRow > span:last-child {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.phaseRow strong {
+  color: #31464f;
+  font-size: 14px;
+}
+
+.phaseRow small {
+  color: #74848b;
+  font-size: 12px;
+}
+
+.jobMeta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 7px 14px;
+  color: #7a898f;
+  font-size: 12px;
+}
+
+.jobMeta span:first-child {
+  max-width: 310px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 767px) {
+  .triggerLabel {
+    display: none;
+  }
+
+  .trigger:global(.ant-btn) {
+    padding-inline: 8px;
+  }
+}
+
+@media (max-width: 575px) {
+  .summary,
+  .jobHeading {
+    flex-direction: column;
+  }
+
+  .jobHeading > span > :global(.ant-typography),
+  .jobMeta span:first-child {
+    max-width: 100%;
+  }
+}
