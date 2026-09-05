@@ -6,6 +6,7 @@ import {
   SafetyCertificateOutlined,
 } from "@ant-design/icons";
 import { Avatar, Breadcrumb, Button, Layout, Space, Typography } from "antd";
+import { ServiceStatus } from "@/shared/components/ServiceStatus/ServiceStatus";
 import styles from "./AppShell.module.css";
 
 interface AppShellProps {
@@ -32,6 +33,7 @@ export function AppShell({ children }: AppShellProps) {
           </div>
 
           <Space className={styles.account} size={10}>
+            <ServiceStatus />
             <Button
               type="text"
               shape="circle"
