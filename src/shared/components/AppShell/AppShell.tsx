@@ -44,7 +44,7 @@ export function AppShell({ children, headerActions }: AppShellProps) {
             />
             <span className={styles.headerDivider} />
             <Avatar size={32} className={styles.accountAvatar}>
-              王
+              杨
             </Avatar>
             <span className={styles.accountCopy}>
               <Typography.Text>杨中民</Typography.Text>
