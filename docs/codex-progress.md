@@ -95,5 +95,24 @@
 - 后端接口依赖：`GET /api/v1/announcements/{announcementId}/tree`
 - 验证结果：真实接口返回有效根目录与节点；`npm run lint`、`npm run build` 均通过；项目无独立 test 脚本。
 
-- 功能 6：全局任务中心——尚未开始。
+## 功能 6：全局任务中心
+
+- 状态：DONE
+- 对应 commit hash：`cd3cd5a`
+- 主要修改文件：
+  - `src/entities/Job/runningJobs.ts`
+  - `src/features/TaskCenter/ui/TaskCenter.tsx`
+  - `src/features/TaskCenter/ui/TaskCenter.module.css`
+  - `src/shared/components/AppShell/AppShell.tsx`
+  - `src/app/router.tsx`
+- 已实现内容：
+  - 接入当前运行任务列表接口，并复用后端返回的任务状态、阶段、消息和更新时间。
+  - 在应用顶部增加带运行数量提示的全局任务中心入口。
+  - 抽屉集中展示清理和恢复任务，支持手动刷新、定时轮询及页面重新可见时刷新。
+  - 明确提示接口仅返回 `CREATED`、`RUNNING` 状态的当前任务，已结束任务不会伪装成历史记录。
+  - `AppShell` 通过顶部操作插槽接入业务组件，保持 `shared` 层不反向依赖 `features` 层。
+- 未完成内容：无。
+- 后端接口依赖：`GET /api/v1/jobs`
+- 验证结果：真实接口返回合法 `jobs` 数组；`npm run lint`、`npm run build` 均通过；项目无独立 test 脚本。
+
 - 功能 7：文件详情抽屉和引用次数提示——尚未开始。
