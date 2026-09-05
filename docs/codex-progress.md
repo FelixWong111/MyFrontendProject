@@ -58,7 +58,24 @@
 - 后端接口依赖：`POST /api/v1/announcements/{announcementId}/resume`
 - 验证结果：`npm run lint`、`npm run build` 均通过；项目无独立 test 脚本。
 
-- 功能 4：增加服务健康状态指示器——尚未开始。
+## 功能 4：服务健康状态指示器
+
+- 状态：DONE
+- 对应 commit hash：`2954a7f`
+- 主要修改文件：
+  - `src/entities/System/systemStatus.ts`
+  - `src/shared/components/ServiceStatus/ServiceStatus.tsx`
+  - `src/shared/components/ServiceStatus/ServiceStatus.module.css`
+  - `src/shared/components/AppShell/AppShell.tsx`
+- 已实现内容：
+  - 接入后端健康检查和版本接口。
+  - 顶部显示正常、Docling 异常、后端不可用和检查中状态。
+  - 状态弹层展示后端、Docling 及版本信息，并支持手动重查。
+  - 健康状态每 30 秒刷新，页面重新可见时立即检查。
+- 未完成内容：无。
+- 后端接口依赖：`GET /api/v1/health`、`GET /api/v1/version`
+- 验证结果：真实接口返回后端和 Docling 均为 `UP`；`npm run lint`、`npm run build` 均通过；项目无独立 test 脚本。
+
 - 功能 5：公告附件目录树——尚未开始。
 - 功能 6：全局任务中心——尚未开始。
 - 功能 7：文件详情抽屉和引用次数提示——尚未开始。
