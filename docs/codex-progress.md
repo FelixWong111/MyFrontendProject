@@ -76,6 +76,24 @@
 - 后端接口依赖：`GET /api/v1/health`、`GET /api/v1/version`
 - 验证结果：真实接口返回后端和 Docling 均为 `UP`；`npm run lint`、`npm run build` 均通过；项目无独立 test 脚本。
 
-- 功能 5：公告附件目录树——尚未开始。
+## 功能 5：公告附件目录树
+
+- 状态：DONE
+- 对应 commit hash：`fd1b37c`
+- 主要修改文件：
+  - `src/entities/Announcement/announcementTree.ts`
+  - `src/features/AnnouncementWorkbench/ui/AnnouncementFileTree.tsx`
+  - `src/features/AnnouncementWorkbench/ui/AnnouncementFileTree.module.css`
+  - `src/features/AnnouncementWorkbench/ui/AnnouncementFilesWorkspace.tsx`
+- 已实现内容：
+  - 接入公告目录树接口并严格区分目录、文件节点。
+  - 公告附件区域改为可展开目录树。
+  - 文件节点支持选择后在原有 PDF/Word 预览器中打开。
+  - 文件节点保留卸下操作，并在挂接变化后重新读取目录树。
+  - 已覆盖公告不存在、目录损坏和请求失败状态。
+- 未完成内容：无。
+- 后端接口依赖：`GET /api/v1/announcements/{announcementId}/tree`
+- 验证结果：真实接口返回有效根目录与节点；`npm run lint`、`npm run build` 均通过；项目无独立 test 脚本。
+
 - 功能 6：全局任务中心——尚未开始。
 - 功能 7：文件详情抽屉和引用次数提示——尚未开始。
