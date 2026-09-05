@@ -115,4 +115,26 @@
 - 后端接口依赖：`GET /api/v1/jobs`
 - 验证结果：真实接口返回合法 `jobs` 数组；`npm run lint`、`npm run build` 均通过；项目无独立 test 脚本。
 
-- 功能 7：文件详情抽屉和引用次数提示——尚未开始。
+## 功能 7：文件详情抽屉和引用次数提示
+
+- 状态：DONE
+- 对应 commit hash：`7545a37`
+- 主要修改文件：
+  - `src/entities/Detail-file/getFileDetail.ts`
+  - `src/features/FileDetails/ui/FileDetailDrawer.tsx`
+  - `src/features/FileDetails/ui/FileDetailDrawer.module.css`
+  - `src/shared/components/FilesList/FilesList.tsx`
+  - `src/shared/components/FilesList/FilesList.css`
+  - `src/features/AnnouncementWorkbench/ui/AnnouncementFileTree.tsx`
+  - `src/features/AnnouncementWorkbench/ui/AnnouncementFileTree.module.css`
+  - `src/features/AnnouncementWorkbench/ui/AnnouncementFilesWorkspace.tsx`
+- 已实现内容：
+  - 文件库新增“详情”操作，引用次数标签可直接打开引用明细。
+  - 新增文件详情抽屉，展示文件名、文件 ID、大小、上传时间和后端返回的引用次数。
+  - 抽屉展示每个引用公告的名称、公告 ID 和挂接路径，并提示被引用文件不可直接删除。
+  - 公告目录树的文件节点新增详情入口，复用同一个详情抽屉。
+  - 详情请求支持取消、手动刷新、失败重试，并在 `FILE_NOT_FOUND` 时关闭抽屉和刷新关联状态。
+  - 挂接关系刷新后，已打开的详情抽屉会重新读取最新引用数据。
+- 未完成内容：无。
+- 后端接口依赖：`GET /api/v1/files`、`GET /api/v1/files/{fileId}`
+- 验证结果：真实详情接口返回 `attachmentCount` 与完整 `attachments` 数组；`npm run lint`、`npm run build` 均通过；项目无独立 test 脚本。
