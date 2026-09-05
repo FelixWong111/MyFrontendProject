@@ -24,7 +24,7 @@
 ## 功能 2：扩展清理任务进度
 
 - 状态：BLOCKED
-- 对应 commit hash：无（未创建功能提交）
+- 对应 commit hash：`0b7d9fa`（BLOCKED 记录提交）
 - 本次修改的主要文件：无业务源码修改；仅更新 `docs/codex-progress.md`
 - 已完成内容：
   - 已核对 `GET /api/v1/jobs/{jobId}` 文档、现有任务类型和进度组件。
@@ -41,7 +41,23 @@
 
 ## 后续功能
 
-- 功能 3：增加清理任务恢复——尚未开始。
+## 功能 3：清理任务恢复
+
+- 状态：DONE
+- 对应 commit hash：`bf9a0ac`
+- 主要修改文件：
+  - `src/features/Process-Announcement/api/announcementProcessing.ts`
+  - `src/features/Process-Announcement/ui/AnnouncementProcessingWorkspace.tsx`
+  - `src/features/Process-Announcement/ui/AnnouncementProcessingWorkspace.module.css`
+- 已实现内容：
+  - 接入恢复接口并按文档提交 `{ "force": false }`。
+  - 清理失败或部分完成时显示“恢复任务”按钮。
+  - 恢复提交成功后复用现有任务轮询和公告快照刷新。
+  - 已覆盖不可恢复、任务已运行、队列满、公告不存在和服务关闭错误提示。
+- 未完成内容：无。
+- 后端接口依赖：`POST /api/v1/announcements/{announcementId}/resume`
+- 验证结果：`npm run lint`、`npm run build` 均通过；项目无独立 test 脚本。
+
 - 功能 4：增加服务健康状态指示器——尚未开始。
 - 功能 5：公告附件目录树——尚未开始。
 - 功能 6：全局任务中心——尚未开始。
