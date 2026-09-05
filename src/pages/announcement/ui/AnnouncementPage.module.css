@@ -4,6 +4,18 @@
   padding: 28px 0 12px;
 }
 
+.workspaceTabs > :global(.ant-tabs-nav) {
+  margin-bottom: 18px;
+}
+
+.workspaceTabs > :global(.ant-tabs-nav) :global(.ant-tabs-tab) {
+  padding: 9px 14px;
+  border-radius: 9px;
+  background: rgb(255 255 255 / 0.72);
+  font-size: 15px;
+  font-weight: 650;
+}
+
 .contentGrid {
   display: grid;
   grid-template-areas: "workbench sidebar";

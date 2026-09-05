@@ -1,4 +1,11 @@
-import { App, Card, Tag, Typography } from "antd";
+import {
+  App,
+  Card,
+  Tag,
+  Tabs,
+  Typography,
+} from "antd";
+import { FileTextOutlined, ProductOutlined } from "@ant-design/icons";
 
 import { AnnouncementList } from "@/entities/Announcement/AnnouncementList";
 import type {
@@ -8,6 +15,7 @@ import type {
 import { AnnouncementWorkbench } from "@/features/AnnouncementWorkbench/ui/AnnouncementWorkbench";
 import { CreateAnnouncement } from "@/features/Create-Announcement/ui/CreateAnnouncement";
 import { deleteAnnouncement } from "@/features/Delete-Announcement/api/deleteAnnouncement";
+import { ProductWorkbench } from "@/features/ProductWorkbench/ui/ProductWorkbench";
 import { useAnnouncementPage } from "@/pages/announcement/model/useAnnouncementPage";
 import { getApiError, getApiErrorMessage } from "@/shared/api/apiError";
 
@@ -86,62 +94,88 @@ export function AnnouncementPage() {
 
   return (
     <div className={styles.page}>
-      <div className={styles.contentGrid}>
-        <main className={styles.mainColumn}>
-          <AnnouncementWorkbench
-            key={selectedAnnouncementId ?? "no-announcement"}
-            announcement={selectedAnnouncement}
-            loading={
-              announcementDetailLoading ||
-              (!selectedAnnouncementId && announcementsLoading)
-            }
-            error={announcementDetailError}
-            fileListRefreshKey={fileListRefreshKey}
-            onAnnouncementUpdated={handleAnnouncementUpdated}
-            onRefreshAnnouncement={refreshSelectedAnnouncement}
-            onRefreshFiles={refreshFiles}
-            onStateMayHaveChanged={handlePossibleServerStateChange}
-          />
-        </main>
+      <Tabs
+        className={styles.workspaceTabs}
+        defaultActiveKey="announcements"
+        items={[
+          {
+            key: "announcements",
+            label: (
+              <span>
+                <FileTextOutlined /> 公告工作台
+              </span>
+            ),
+            children: (
+              <div className={styles.contentGrid}>
+                <main className={styles.mainColumn}>
+                  <AnnouncementWorkbench
+                    key={selectedAnnouncementId ?? "no-announcement"}
+                    announcement={selectedAnnouncement}
+                    loading={
+                      announcementDetailLoading ||
+                      (!selectedAnnouncementId && announcementsLoading)
+                    }
+                    error={announcementDetailError}
+                    fileListRefreshKey={fileListRefreshKey}
+                    onAnnouncementUpdated={handleAnnouncementUpdated}
+                    onAnnouncementSnapshot={applyAnnouncementDetail}
+                    onRefreshAnnouncement={refreshSelectedAnnouncement}
+                    onRefreshFiles={refreshFiles}
+                    onStateMayHaveChanged={handlePossibleServerStateChange}
+                  />
+                </main>
 
-        <aside className={styles.sidebar}>
-          <Card className={styles.sidebarCard} variant="borderless">
-            <div className={styles.sidebarHeading}>
-              <div>
-                <div className={styles.sidebarTitleRow}>
-                  <Typography.Title level={2}>公告列表</Typography.Title>
-                  <Tag>{announcementsTotal}</Tag>
-                </div>
-                <Typography.Paragraph>
-                  选择公告后，在左侧工作台维护详情与子标包。
-                </Typography.Paragraph>
+                <aside className={styles.sidebar}>
+                  <Card className={styles.sidebarCard} variant="borderless">
+                    <div className={styles.sidebarHeading}>
+                      <div>
+                        <div className={styles.sidebarTitleRow}>
+                          <Typography.Title level={2}>公告列表</Typography.Title>
+                          <Tag>{announcementsTotal}</Tag>
+                        </div>
+                        <Typography.Paragraph>
+                          选择公告后，在左侧工作台维护详情与子标包。
+                        </Typography.Paragraph>
+                      </div>
+                    </div>
+
+                    <div className={styles.createAction}>
+                      <CreateAnnouncement onCreated={handleAnnouncementCreated} />
+                    </div>
+
+                    <AnnouncementList
+                      key={announcementSearch.resetKey}
+                      announcements={announcements}
+                      error={announcementsError}
+                      loading={announcementsLoading}
+                      selectedAnnouncementId={selectedAnnouncementId}
+                      searchActive={announcementSearch.active}
+                      searchPage={announcementSearch.page}
+                      searchSize={announcementSearch.size}
+                      searchTotal={announcementSearch.total}
+                      onClearSearch={clearAnnouncementSearch}
+                      onDelete={handleDeleteAnnouncement}
+                      onRetry={retryVisibleAnnouncements}
+                      onSearch={runAnnouncementSearch}
+                      onSearchPageChange={changeAnnouncementSearchPage}
+                      onSelect={(announcement) => selectAnnouncement(announcement.id)}
+                    />
+                  </Card>
+                </aside>
               </div>
-            </div>
-
-            <div className={styles.createAction}>
-              <CreateAnnouncement onCreated={handleAnnouncementCreated} />
-            </div>
-
-            <AnnouncementList
-              key={announcementSearch.resetKey}
-              announcements={announcements}
-              error={announcementsError}
-              loading={announcementsLoading}
-              selectedAnnouncementId={selectedAnnouncementId}
-              searchActive={announcementSearch.active}
-              searchPage={announcementSearch.page}
-              searchSize={announcementSearch.size}
-              searchTotal={announcementSearch.total}
-              onClearSearch={clearAnnouncementSearch}
-              onDelete={handleDeleteAnnouncement}
-              onRetry={retryVisibleAnnouncements}
-              onSearch={runAnnouncementSearch}
-              onSearchPageChange={changeAnnouncementSearchPage}
-              onSelect={(announcement) => selectAnnouncement(announcement.id)}
-            />
-          </Card>
-        </aside>
-      </div>
+            ),
+          },
+          {
+            key: "products",
+            label: (
+              <span>
+                <ProductOutlined /> 产品工作台
+              </span>
+            ),
+            children: <ProductWorkbench />,
+          },
+        ]}
+      />
     </div>
   );
 }

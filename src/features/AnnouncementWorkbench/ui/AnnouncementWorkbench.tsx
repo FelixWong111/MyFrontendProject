@@ -5,6 +5,7 @@ import {
   CodeOutlined,
   FileTextOutlined,
   PartitionOutlined,
+  RobotOutlined,
   SafetyCertificateOutlined,
 } from "@ant-design/icons";
 import { Alert, Button, Card, Empty, Spin, Tabs, Tag, Typography } from "antd";
@@ -14,6 +15,7 @@ import type { AnnouncementDetail } from "@/entities/Announcement/announcement";
 import { AnnouncementFilesWorkspace } from "@/features/AnnouncementWorkbench/ui/AnnouncementFilesWorkspace";
 import { EditAnnouncementDrawer } from "@/features/Edit-Announcement/ui/EditAnnouncementDrawer";
 import { SubLotManager } from "@/features/Manage-SubLots/ui/SubLotManager";
+import { AnnouncementProcessingWorkspace } from "@/features/Process-Announcement/ui/AnnouncementProcessingWorkspace";
 import { formatDateTime } from "@/shared/lib/format";
 
 import styles from "./AnnouncementWorkbench.module.css";
@@ -24,6 +26,7 @@ interface AnnouncementWorkbenchProps {
   error: string;
   fileListRefreshKey: number;
   onAnnouncementUpdated: (announcement: AnnouncementDetail) => void;
+  onAnnouncementSnapshot: (announcement: AnnouncementDetail) => void;
   onRefreshAnnouncement: () => void;
   onRefreshFiles: () => void;
   onStateMayHaveChanged: () => void;
@@ -52,6 +55,7 @@ export function AnnouncementWorkbench({
   error,
   fileListRefreshKey,
   onAnnouncementUpdated,
+  onAnnouncementSnapshot,
   onRefreshAnnouncement,
   onRefreshFiles,
   onStateMayHaveChanged,
@@ -98,7 +102,7 @@ export function AnnouncementWorkbench({
             </div>
             <Typography.Title level={1}>{announcement.name}</Typography.Title>
             <Typography.Paragraph>
-              在同一处维护公告信息、子标包与附件，并直接核对 PDF 原文。
+              在同一处维护公告信息、子标包与附件，并直接核对 PDF 或 Word 原文。
             </Typography.Paragraph>
           </div>
           <EditAnnouncementDrawer
@@ -186,8 +190,23 @@ export function AnnouncementWorkbench({
       <Card className={styles.workspaceCard} variant="borderless">
         <Spin spinning={loading} tip="正在同步公告数据...">
           <Tabs
-            defaultActiveKey="sub-lots"
+            defaultActiveKey="processing"
             items={[
+              {
+                key: "processing",
+                label: (
+                  <span>
+                    <RobotOutlined /> 清理与匹配
+                  </span>
+                ),
+                children: (
+                  <AnnouncementProcessingWorkspace
+                    announcement={announcement}
+                    onAnnouncementSnapshot={onAnnouncementSnapshot}
+                    onStateMayHaveChanged={onStateMayHaveChanged}
+                  />
+                ),
+              },
               {
                 key: "sub-lots",
                 label: `子标包（${detail.subLotIds.length}）`,
@@ -201,7 +220,7 @@ export function AnnouncementWorkbench({
               },
               {
                 key: "files",
-                label: `文件与 PDF（${announcement.files.length}）`,
+                label: `文件与预览（${announcement.files.length}）`,
                 children: (
                   <AnnouncementFilesWorkspace
                     announcement={announcement}

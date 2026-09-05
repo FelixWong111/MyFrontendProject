@@ -21,8 +21,12 @@ import { deleteFile } from "@/features/Delete-file/api/deleteFile";
 import { AttachedFiles } from "@/features/Detach-file/ui/AttachedFiles";
 import { UploadFile } from "@/features/Upload-file/ui/UploadFile";
 import { getApiError, getApiErrorMessage } from "@/shared/api/apiError";
+import {
+  canPreviewDocument,
+  getDocumentPreviewKind,
+} from "@/shared/components/document-viewer/documentTypes";
+import { DocumentViewer } from "@/shared/components/document-viewer/DocumentViewer";
 import { FileList } from "@/shared/components/FilesList/FilesList";
-import { PDF_viewer } from "@/shared/components/pdf-viewer/pdf-viewer";
 
 import styles from "./AnnouncementFilesWorkspace.module.css";
 
@@ -57,7 +61,7 @@ export function AnnouncementFilesWorkspace({
   const [selectedLibraryFile, setSelectedLibraryFile] =
     useState<FileItem | null>(null);
   const [previewFile, setPreviewFile] = useState<PreviewFile | null>(null);
-  const [pdfBlob, setPdfBlob] = useState<Blob | null>(null);
+  const [documentBlob, setDocumentBlob] = useState<Blob | null>(null);
   const [fileContentLoading, setFileContentLoading] = useState(false);
   const [fileError, setFileError] = useState("");
   const [fileContentRefreshKey, setFileContentRefreshKey] = useState(0);
@@ -67,9 +71,8 @@ export function AnnouncementFilesWorkspace({
     !announcement.files.some((file) => file.fileId === previewFile.fileId)
       ? null
       : previewFile;
-  const canPreview = Boolean(
-    activePreviewFile?.originalName.toLowerCase().endsWith(".pdf"),
-  );
+  const previewKind = getDocumentPreviewKind(activePreviewFile?.originalName);
+  const canPreview = canPreviewDocument(activePreviewFile?.originalName);
 
   useEffect(() => {
     if (!activePreviewFile || !canPreview) {
@@ -77,21 +80,25 @@ export function AnnouncementFilesWorkspace({
     }
 
     let disposed = false;
+    const controller = new AbortController();
 
     const loadFile = async () => {
-      setPdfBlob(null);
+      setDocumentBlob(null);
       setFileError("");
       setFileContentLoading(true);
 
       try {
-        const result = await getFileContent(activePreviewFile.fileId);
+        const result = await getFileContent(
+          activePreviewFile.fileId,
+          controller.signal,
+        );
         if (!disposed) {
-          setPdfBlob(result.blob);
+          setDocumentBlob(result.blob);
         }
       } catch (reason) {
         if (!disposed) {
           setFileError(
-            getApiErrorMessage(reason, "无法读取这个 PDF 文件。", {
+            getApiErrorMessage(reason, "无法读取这个文档。", {
               FILE_NOT_FOUND: "所选文件不存在或其存储内容已缺失。",
             }),
           );
@@ -107,12 +114,13 @@ export function AnnouncementFilesWorkspace({
 
     return () => {
       disposed = true;
+      controller.abort();
     };
   }, [activePreviewFile, canPreview, fileContentRefreshKey]);
 
   const selectLibraryFile = (file: FileItem) => {
     setSelectedLibraryFile(file);
-    setPdfBlob(null);
+    setDocumentBlob(null);
     setFileError("");
     setFileContentLoading(false);
     setPreviewFile({
@@ -123,7 +131,7 @@ export function AnnouncementFilesWorkspace({
   };
 
   const selectAttachment = (file: AnnouncementFile) => {
-    setPdfBlob(null);
+    setDocumentBlob(null);
     setFileError("");
     setFileContentLoading(false);
     setPreviewFile({
@@ -142,7 +150,7 @@ export function AnnouncementFilesWorkspace({
       }
       if (previewFile?.fileId === file.fileId) {
         setPreviewFile(null);
-        setPdfBlob(null);
+        setDocumentBlob(null);
       }
       onRefreshFiles();
     } catch (reason) {
@@ -169,7 +177,7 @@ export function AnnouncementFilesWorkspace({
       !updated.files.some((file) => file.fileId === previewFile.fileId)
     ) {
       setPreviewFile(null);
-      setPdfBlob(null);
+      setDocumentBlob(null);
       setFileError("");
       setFileContentLoading(false);
     }
@@ -179,7 +187,9 @@ export function AnnouncementFilesWorkspace({
 
   const displayedFileError = activePreviewFile
     ? !canPreview
-      ? "当前预览器仅支持 PDF；这个文件仍可正常挂接到公告。"
+      ? previewKind === "legacy-doc"
+        ? "旧版 DOC 暂不支持浏览器预览，请将文件另存为 DOCX 或 PDF。"
+        : "当前预览器支持 PDF 和 DOCX；这个文件仍可正常挂接到公告。"
       : fileError
     : "";
 
@@ -191,7 +201,7 @@ export function AnnouncementFilesWorkspace({
             <div>
               <Typography.Title level={3}>公告附件</Typography.Title>
               <Typography.Text type="secondary">
-                选择附件后在右侧直接核对 PDF。
+                选择附件后在右侧直接核对 PDF 或 Word 原文。
               </Typography.Text>
             </div>
             <PaperClipOutlined />
@@ -211,7 +221,7 @@ export function AnnouncementFilesWorkspace({
         <section className={styles.previewPanel}>
           <div className={styles.panelHeading}>
             <div>
-              <Typography.Title level={3}>PDF 预览</Typography.Title>
+              <Typography.Title level={3}>文档预览</Typography.Title>
               <Typography.Text type="secondary">
                 {activePreviewFile?.originalName ?? "尚未选择文件"}
               </Typography.Text>
@@ -242,11 +252,11 @@ export function AnnouncementFilesWorkspace({
             )}
             tip="正在读取文件..."
           >
-            <PDF_viewer
+            <DocumentViewer
               key={`${activePreviewFile?.fileId ?? "no-file"}:${
-                activePreviewFile && pdfBlob ? "loaded" : "empty"
-              }`}
-              pdfBlob={activePreviewFile ? pdfBlob : null}
+                activePreviewFile && documentBlob ? "loaded" : "empty"
+              }:${fileContentRefreshKey}`}
+              documentBlob={activePreviewFile ? documentBlob : null}
               fileName={activePreviewFile?.originalName}
             />
           </Spin>

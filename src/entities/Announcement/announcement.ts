@@ -8,12 +8,20 @@ export type AnnouncementFile = Pick<
   relativePath: string;
 };
 
+export type AsyncOperationStatus = "RUNNING" | "SUCCESS" | "FAILED";
+
 interface AnnouncementMetadata {
   id: string;
   name: string;
   lastModifiedTime: string;
   lastGeneratedCleanedAnnouncementTime: string | null;
   lastJobId: string | null;
+  lastExtractionStatus: AsyncOperationStatus | null;
+  lastExtractedAt: string | null;
+  lastExtractionError: string | null;
+  lastMatchStatus: AsyncOperationStatus | null;
+  lastMatchedAt: string | null;
+  lastMatchError: string | null;
 }
 
 export interface AnnouncementInfo {

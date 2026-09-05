@@ -24,6 +24,7 @@ import { useState } from "react";
 import type {
   AnnouncementListEntry,
   AnnouncementSearchParams,
+  AsyncOperationStatus,
 } from "@/entities/Announcement/announcement";
 import { formatDateTime } from "@/shared/lib/format";
 
@@ -60,6 +61,16 @@ function getHitLabel(path: string) {
   if (path.endsWith(".depositNote")) return "保证金说明";
   if (path.includes(".qualifications[")) return "子标包资格";
   return path;
+}
+
+function getOperationTag(
+  label: string,
+  status: AsyncOperationStatus | null,
+) {
+  if (status === "RUNNING") return <Tag color="processing">{label}中</Tag>;
+  if (status === "SUCCESS") return <Tag color="success">{label}成功</Tag>;
+  if (status === "FAILED") return <Tag color="error">{label}失败</Tag>;
+  return <Tag>{label}未运行</Tag>;
 }
 
 export function AnnouncementList({
@@ -323,11 +334,15 @@ export function AnnouncementList({
                   ) : (
                     <Tag color="blue">命中 {searchHits.length} 个字段</Tag>
                   )}
-                  {announcement.lastJobId ? (
-                    <Tag color="cyan">已有处理任务</Tag>
+                  {announcement.lastGeneratedCleanedAnnouncementTime ? (
+                    <Tag color="success">已有清理结果</Tag>
+                  ) : announcement.lastJobId ? (
+                    <Tag color="processing">清理已提交</Tag>
                   ) : (
-                    <Tag>尚未处理</Tag>
+                    <Tag>未清理</Tag>
                   )}
+                  {getOperationTag("提取", announcement.lastExtractionStatus)}
+                  {getOperationTag("匹配", announcement.lastMatchStatus)}
                 </div>
 
                 {firstSearchHit ? (

@@ -55,9 +55,8 @@ export function AppShell({ children }: AppShellProps) {
         <div className={styles.breadcrumbInner}>
           <Breadcrumb
             items={[
-              { title: "招标公告" },
-              { title: "待审队列" },
-              { title: "公告详情" },
+              { title: "招采管理" },
+              { title: "工作台" },
             ]}
           />
         </div>
@@ -65,7 +64,7 @@ export function AppShell({ children }: AppShellProps) {
 
       <Layout.Content className={styles.content}>{children}</Layout.Content>
       <Layout.Footer className={styles.footer}>
-        招采智审 · 招标公告审核工作台
+        招采智审 · 公告与产品工作台
       </Layout.Footer>
     </Layout>
   );

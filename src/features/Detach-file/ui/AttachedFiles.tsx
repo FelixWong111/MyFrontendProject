@@ -2,6 +2,7 @@ import {
   DisconnectOutlined,
   FileOutlined,
   FilePdfOutlined,
+  FileWordOutlined,
 } from "@ant-design/icons";
 import {
   Alert,
@@ -21,6 +22,7 @@ import type {
 } from "@/entities/Announcement/announcement";
 import { detachFile } from "@/features/Detach-file/api/detachFile";
 import { getApiError, getApiErrorMessage } from "@/shared/api/apiError";
+import { getDocumentPreviewKind } from "@/shared/components/document-viewer/documentTypes";
 import { formatFileSize } from "@/shared/lib/format";
 
 import styles from "./AttachedFiles.module.css";
@@ -109,7 +111,15 @@ export function AttachedFiles({
           ),
         }}
         renderItem={(file) => {
-          const isPdf = file.originalName.toLowerCase().endsWith(".pdf");
+          const previewKind = getDocumentPreviewKind(file.originalName);
+          const fileIcon =
+            previewKind === "pdf" ? (
+              <FilePdfOutlined />
+            ) : previewKind === "docx" || previewKind === "legacy-doc" ? (
+              <FileWordOutlined />
+            ) : (
+              <FileOutlined />
+            );
           const selected = selectedFileId === file.fileId;
 
           return (
@@ -120,7 +130,7 @@ export function AttachedFiles({
                 <Button
                   className={styles.fileButton}
                   type="text"
-                  icon={isPdf ? <FilePdfOutlined /> : <FileOutlined />}
+                  icon={fileIcon}
                   onClick={() => onSelectFile?.(file)}
                 >
                   <span className={styles.fileCopy}>

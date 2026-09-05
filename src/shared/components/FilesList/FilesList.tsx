@@ -1,4 +1,9 @@
-import { DeleteOutlined, FileOutlined } from "@ant-design/icons";
+import {
+  DeleteOutlined,
+  FileOutlined,
+  FilePdfOutlined,
+  FileWordOutlined,
+} from "@ant-design/icons";
 import {
   Alert,
   Button,
@@ -16,6 +21,7 @@ import { useEffect, useState } from "react";
 import { listFiles } from "@/entities/List-files/listFiles";
 import type { FileItem } from "@/entities/List-files/listFiles";
 import { getApiErrorMessage } from "@/shared/api/apiError";
+import { getDocumentPreviewKind } from "@/shared/components/document-viewer/documentTypes";
 import { formatDateTime, formatFileSize } from "@/shared/lib/format";
 
 import "./FilesList.css";
@@ -108,16 +114,28 @@ export function FileList({
       title: "文件名",
       dataIndex: "originalName",
       key: "originalName",
-      render: (name: string, file) => (
-        <Button
-          className="files-list__name"
-          type="link"
-          icon={<FileOutlined />}
-          onClick={() => onSelectFile(file)}
-        >
-          {name}
-        </Button>
-      ),
+      render: (name: string, file) => {
+        const previewKind = getDocumentPreviewKind(name);
+        const icon =
+          previewKind === "pdf" ? (
+            <FilePdfOutlined />
+          ) : previewKind === "docx" || previewKind === "legacy-doc" ? (
+            <FileWordOutlined />
+          ) : (
+            <FileOutlined />
+          );
+
+        return (
+          <Button
+            className="files-list__name"
+            type="link"
+            icon={icon}
+            onClick={() => onSelectFile(file)}
+          >
+            {name}
+          </Button>
+        );
+      },
     },
     {
       title: "fileId",

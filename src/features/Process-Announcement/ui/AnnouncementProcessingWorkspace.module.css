@@ -1,0 +1,227 @@
+.workspace {
+  display: grid;
+  gap: 16px;
+}
+
+.statusGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.statusCard:global(.ant-card) {
+  height: 100%;
+  border-color: #e1e9ea;
+  background: #fbfdfd;
+}
+
+.statusCard :global(.ant-card-body) {
+  display: flex;
+  min-height: 174px;
+  flex-direction: column;
+}
+
+.statusHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.statusHeading :global(h4.ant-typography) {
+  margin: 0 !important;
+  color: #243740;
+  font-size: 16px;
+}
+
+.statusHeading :global(.ant-tag) {
+  margin: 0;
+}
+
+.statusTime {
+  display: grid;
+  gap: 3px;
+  margin-top: 18px;
+}
+
+.statusTime span {
+  color: #7c8b91;
+  font-size: 13px;
+}
+
+.statusTime strong {
+  color: #354851;
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.statusError:global(.ant-typography) {
+  margin: 10px 0 0 !important;
+  font-size: 13px;
+}
+
+.statusAction {
+  margin-top: auto;
+  padding-top: 16px;
+}
+
+.statusAction :global(.ant-btn) {
+  width: 100%;
+}
+
+.progressCard:global(.ant-card),
+.matchCard:global(.ant-card) {
+  border-color: #e1e9ea;
+}
+
+.progressCard :global(.ant-card-extra),
+.matchCard :global(.ant-card-extra) {
+  max-width: 52%;
+}
+
+.progressCard :global(.ant-typography code) {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.progressContent {
+  display: grid;
+  gap: 12px;
+}
+
+.progressHeading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.progressHeading strong,
+.progressHeading small {
+  display: block;
+}
+
+.progressHeading strong {
+  color: #273b44;
+  font-size: 14px;
+}
+
+.progressHeading small {
+  margin-top: 3px;
+  color: #74858c;
+  font-size: 13px;
+}
+
+.fileStats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  color: #687a82;
+  font-size: 13px;
+}
+
+.matchResult {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px 28px;
+}
+
+.previousResultAlert {
+  margin-bottom: 16px;
+}
+
+.matchDecision {
+  display: flex;
+  grid-column: 1 / -1;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px;
+  border-radius: 12px;
+  background: #f5f9f9;
+}
+
+.matchDecision > span:last-child {
+  min-width: 0;
+}
+
+.matchDecision :global(h3.ant-typography) {
+  margin: 0 0 5px !important;
+  color: #243740;
+  font-size: 18px;
+}
+
+.matchDecision :global(p.ant-typography) {
+  margin: 0 !important;
+  color: #5e7078;
+  font-size: 14px;
+}
+
+.possible,
+.notPossible {
+  display: grid;
+  flex: 0 0 38px;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 21px;
+}
+
+.possible {
+  background: #dcf3ea;
+  color: #2f855a;
+}
+
+.notPossible {
+  background: #fae6e2;
+  color: #c74d39;
+}
+
+.resultGroup {
+  min-width: 0;
+}
+
+.resultGroup > strong {
+  display: block;
+  margin-bottom: 8px;
+  color: #40535c;
+  font-size: 14px;
+}
+
+.resultGroup :global(.ant-tag) {
+  margin: 0;
+  white-space: normal;
+}
+
+.resultGroup ul {
+  margin: 0;
+  padding-left: 20px;
+  color: #52666f;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.riskList {
+  color: #a65b27 !important;
+}
+
+@media (max-width: 840px) {
+  .statusGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .statusCard :global(.ant-card-body) {
+    min-height: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .matchResult {
+    grid-template-columns: 1fr;
+  }
+
+  .matchDecision {
+    grid-column: auto;
+  }
+}

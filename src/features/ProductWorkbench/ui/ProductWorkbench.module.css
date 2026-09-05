@@ -1,0 +1,111 @@
+.workbench {
+  display: grid;
+  gap: 18px;
+}
+
+.heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 24px 26px;
+  border: 1px solid #dbe5e6;
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 96% 8%, rgb(24 145 134 / 0.12), transparent 31%),
+    #ffffff;
+}
+
+.heading > div {
+  min-width: 0;
+}
+
+.titleRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.titleRow :global(h1.ant-typography) {
+  margin: 0 !important;
+  color: #172b35;
+  font-size: clamp(24px, 2.2vw, 34px);
+  line-height: 1.24;
+  letter-spacing: -0.035em;
+}
+
+.titleRow :global(.ant-tag) {
+  margin: 0;
+}
+
+.heading :global(p.ant-typography) {
+  max-width: 720px;
+  margin: 9px 0 0 !important;
+  color: #687a83;
+  font-size: 14px;
+}
+
+.tableCard:global(.ant-card) {
+  border: 1px solid #dfe7e8;
+  border-radius: 16px;
+  box-shadow: 0 1px 2px rgb(15 23 42 / 0.03);
+}
+
+.error {
+  margin-bottom: 16px;
+}
+
+.productName {
+  display: flex;
+  min-width: 0;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.productName > span:last-child {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+}
+
+.productName :global(.ant-typography) {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.productName :global(.ant-typography-copy) {
+  margin-inline-start: 5px;
+}
+
+.productIcon {
+  display: grid;
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 9px;
+  background: #e7f5f2;
+  color: #0f766e;
+}
+
+.description:global(.ant-typography) {
+  margin: 0 !important;
+  color: #52666f;
+}
+
+@media (max-width: 640px) {
+  .heading {
+    flex-direction: column;
+    padding: 20px 18px;
+    border-radius: 14px;
+  }
+
+  .heading > :global(.ant-btn) {
+    width: 100%;
+  }
+
+  .tableCard :global(.ant-card-body) {
+    padding: 14px;
+  }
+}

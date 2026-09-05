@@ -305,6 +305,12 @@ export function useAnnouncementPage() {
         lastGeneratedCleanedAnnouncementTime:
           detail.lastGeneratedCleanedAnnouncementTime,
         lastJobId: detail.lastJobId,
+        lastExtractionStatus: detail.lastExtractionStatus,
+        lastExtractedAt: detail.lastExtractedAt,
+        lastExtractionError: detail.lastExtractionError,
+        lastMatchStatus: detail.lastMatchStatus,
+        lastMatchedAt: detail.lastMatchedAt,
+        lastMatchError: detail.lastMatchError,
       };
 
       const shouldUpdateSelection =
@@ -326,6 +332,26 @@ export function useAnnouncementPage() {
         [listItem, ...current.filter((item) => item.id !== detail.id)].sort(
           (left, right) =>
             right.lastModifiedTime.localeCompare(left.lastModifiedTime),
+        ),
+      );
+      setAnnouncementSearchResults((current) =>
+        current.map((result) =>
+          result.id === detail.id
+            ? {
+                ...result,
+                name: detail.name,
+                lastModifiedTime: detail.lastModifiedTime,
+                lastGeneratedCleanedAnnouncementTime:
+                  detail.lastGeneratedCleanedAnnouncementTime,
+                lastJobId: detail.lastJobId,
+                lastExtractionStatus: detail.lastExtractionStatus,
+                lastExtractedAt: detail.lastExtractedAt,
+                lastExtractionError: detail.lastExtractionError,
+                lastMatchStatus: detail.lastMatchStatus,
+                lastMatchedAt: detail.lastMatchedAt,
+                lastMatchError: detail.lastMatchError,
+              }
+            : result,
         ),
       );
     },
